@@ -45,8 +45,7 @@ int main(int argc, char** argv){
     Calibration::update();
 
     // Reads an input key
-    char key = (char) cv::waitKey(30);
-    if (key == 'q' || key == 27)
+    if(Calibration::listenKey())
       break;
   }
   return 0;
