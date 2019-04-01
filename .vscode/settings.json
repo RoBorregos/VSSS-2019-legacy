@@ -10,6 +10,14 @@
     "stdexcept": "cpp",
     "type_traits": "cpp",
     "typeinfo": "cpp",
-    "algorithm": "cpp"
+    "algorithm": "cpp",
+    "vector": "cpp",
+    "utility": "cpp",
+    "fstream": "cpp",
+    "iosfwd": "cpp",
+    "string": "cpp",
+    "iostream": "cpp",
+    "complex": "cpp",
+    "chrono": "cpp"
   }
 }

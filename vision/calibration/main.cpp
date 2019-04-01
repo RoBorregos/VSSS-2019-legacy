@@ -4,7 +4,7 @@
 // Validates input 
 bool isNotValid(int &argc, char** &argv, cv::Mat &image){
   if( argc != 2){
-    std::cout <<"Usage: ./test image" << std::endl;
+    std::cout <<"Usage: ./main test.png" << std::endl;
     return true;
   }
   // Read the file
@@ -26,7 +26,7 @@ int main(int argc, char** argv){
   // Validates the input image
   if(isNotValid(argc, argv, image))
     return -1;
-  cv::resize(image, image, cv::Size(), 0.46, 0.46);
+  // cv::resize(image, image, cv::Size(), 0.46, 0.46);
 
   // Initialize video and stores it in 'image'
   // cv::VideoCapture cap(argc > 1 ? atoi(argv[1]) : 0);

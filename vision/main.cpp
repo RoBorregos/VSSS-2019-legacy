@@ -4,7 +4,7 @@
 // Validates input 
 bool isNotValid(int &argc, char** &argv, cv::Mat &image){
   if( argc != 2){
-    std::cout <<"Usage: ./test image" << std::endl;
+    std::cout <<"Usage: ./main test.png" << std::endl;
     return true;
   }
   
@@ -23,14 +23,15 @@ bool isNotValid(int &argc, char** &argv, cv::Mat &image){
 
 int main(int argc, char** argv){
   cv::Mat image;
+  double circleMinArea = 0.03, circleMaxArea = 0.05, maxHyp = 40;
 
   // Validates the input image
   if(isNotValid(argc, argv, image))
     return -1;
-  cv::resize(image, image, cv::Size(), 0.46, 0.46);
+  // cv::resize(image, image, cv::Size(), 0.46, 0.46);
 
   Vision(image, "blue");
-  static std::vector<std::vector<cv::Point> > del;
+  Vision::settings(circleMinArea, circleMaxArea, maxHyp);
 
-  del = Vision::getContours();
+  Vision::update();
 }
