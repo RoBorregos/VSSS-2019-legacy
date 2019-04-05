@@ -31,7 +31,7 @@ Calibration::Calibration(std::string screenName, cv::Mat &image){
   cv::createTrackbar("High H", screenName, &hueMax, 255, this->onHueMaxTrackBar);
   cv::createTrackbar("Low  S", screenName, &satMin, 255, this->onSatMinTrackBar);
   cv::createTrackbar("High S", screenName, &satMax, 255, this->onSatMaxTrackBar);
-  cv::createTrackbar("Low  V", screenName, &valMin, 255, this->onValMinTrackBar);
+  cv::createTrackbar("Low  V", screenName, &valMin, 255, this->onValMinTrackBar); 
   cv::createTrackbar("High V", screenName, &valMax, 255, this->onValMaxTrackBar);
 
   // Displays the original image with the sliders, once
