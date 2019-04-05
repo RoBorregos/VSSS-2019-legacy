@@ -4,14 +4,14 @@
 #include <fstream>
 #include <math.h>
 #include <chrono>
-#include <thread>
+#include <iomanip>
 
 #define PI 3.14159265
 
 struct foo{
   double x, y, dy, dx, ori;
   bool firstTimeFlag = true;
-  std::chrono::time_point<std::chrono::system_clock> *lastTime;
+  std::chrono::time_point<std::chrono::system_clock> lastTime;
 };
 
 struct hsv{

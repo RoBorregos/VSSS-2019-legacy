@@ -26,7 +26,7 @@ int main(int argc, char** argv){
   cv::Mat image;
   cv::VideoCapture cap;
   bool stat = inputValidation(argc, argv, image, cap);
-  if(! image.data){
+  if(!image.data){
     std::cout <<  "Could not open or find the image/video" << std::endl ;
     return -1;
   }

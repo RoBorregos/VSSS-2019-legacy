@@ -1,37 +1,52 @@
 #include <opencv2/imgproc.hpp>  // hsv
 #include "Vision.h"
 
-// Validates input 
-bool isNotValid(int &argc, char** &argv, cv::Mat &image){
-  if( argc != 2){
-    std::cout <<"Usage: ./main test.png" << std::endl;
-    return true;
-  }
+// Validates input. True if static media / False if not
+bool inputValidation(int &argc, char** &argv, cv::Mat &image, cv::VideoCapture &cap){
+  std::string path;
   
-  // Read the file
-  std::string path = "images/" + std::string(argv[1]);
-  image = cv::imread(path, CV_LOAD_IMAGE_COLOR);
-
-  // Check for invalid input
-  if(! image.data ){                             
-    std::cout <<  "Could not open or find the image" << std::endl ;
-    return true;
+  if(argc > 1){
+    path = "media/" + std::string(argv[1]);
+    if(int(std::string(argv[1]).find(".png")) > -1){
+      image = cv::imread(path, CV_LOAD_IMAGE_COLOR);
+      return false;
+    }
   }
 
-  return false;
+  argc > 1 && std::string(argv[1]).find(".mp4") ? cap.open(path) : cap.open(0);
+  cap >> image;
+  return true;
 }
 
 int main(int argc, char** argv){
   cv::Mat image;
-  double circleMinArea = 0.03, circleMaxArea = 0.05, maxHyp = 40;
+  cv::VideoCapture cap;
+  double circleMinArea = 0.03, circleMaxArea = 0.08, maxHyp = 40;
 
-  // Validates the input image
-  if(isNotValid(argc, argv, image))
+  std::cout << std::fixed;
+  std::cout << std::setprecision(3);
+
+  bool stat = inputValidation(argc, argv, image, cap);
+  if(!image.data){
+    std::cout <<  "Could not open or find the image/video" << std::endl ;
     return -1;
+  }
   // cv::resize(image, image, cv::Size(), 0.46, 0.46);
 
   Vision(image, "blue");
   Vision::settings(circleMinArea, circleMaxArea, maxHyp);
 
-  Vision::update();
+  while(true){
+    if(stat)
+      cap >> image;
+    
+    // Exit program if no image was found
+    if(image.empty()){
+      std::cout << "No image has been found\n";
+      break;
+    }
+
+    Vision::update();
+  }
+  return 0;
 }

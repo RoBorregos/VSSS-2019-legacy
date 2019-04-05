@@ -80,7 +80,7 @@ std::vector<std::vector<cv::Point> > Vision::getContours(hsv color){
   cv::findContours(masked, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE, cv::Point(0,0));
   fixContours(contours);
 
-  std::cout << "contours size = " << contours.size() << std::endl;
+  // std::cout << "contours size = " << contours.size() << std::endl;
   return contours;
 }
 
@@ -108,8 +108,7 @@ std::vector<cv::Point2f> Vision::getCentroids(hsv color){
   for(size_t i = 0; i<contours.size(); i++)
     mc[i] = cv::Point2f(mu[i].m10 / mu[i].m00 , mu[i].m01 / mu[i].m00);
   
-  drawContours(contours, mc);
-  
+  // drawContours(contours, mc);
   return mc;
 }
 
@@ -135,11 +134,16 @@ void Vision::update(){
   c_green = getCentroids(green);
   c_pink = getCentroids(pink);
   c_team = teamColor == "blue" ? c_blue : c_yellow;
-
+  // podemos no utilizar c_blue & c_yellow
+  std::cout << "Rob1\n";
   updateValues(rob1, getCentroidPair(c_red, c_team));
+  std::cout << "Rob2\n";
   updateValues(rob2, getCentroidPair(c_green, c_team));
+  std::cout << "Rob3\n";
   updateValues(rob3, getCentroidPair(c_pink, c_team));
+  std::cout << "Ball\n";
   updateValues(ball, getCentroidPair(c_orange, c_orange));
+  std::cout << "-------------------------------\n";
 }
 
 c_pair Vision::getCentroidPair(std::vector<cv::Point2f> c_color, std::vector<cv::Point2f> c_target){
@@ -164,50 +168,40 @@ c_pair Vision::getCentroidPair(std::vector<cv::Point2f> c_color, std::vector<cv:
 }
 
 void Vision::updateValues(foo &f, c_pair cp){
-  double lastX, lastY, xlen, ylen, timeDiff;
+  double lastX, lastY, xlen, ylen, angle;
+  long long timeDiff; 
 
   lastX = f.x;
   lastY = f.y;
   xlen = cp.c_color.x - cp.c_teamColor.x;
   ylen = cp.c_color.y - cp.c_teamColor.y;
-  xlen = xlen == 0 ? 0.0001 : xlen;
-  ylen = ylen == 0 ? 0.0001 : ylen;
+  xlen = xlen == 0 ? 0.000001 : xlen;
+  ylen = ylen == 0 ? 0.000001 : ylen;
   
   f.x = xlen/2 + cp.c_teamColor.x;
   f.y = ylen/2 + cp.c_teamColor.y;
   
-  if(&f != &ball)
-    f.ori = (atan(fabs(ylen) / fabs(xlen)) * 180 / PI) - 45;
+  if(&f != &ball){
+    angle = (atan(fabs(ylen) / fabs(xlen)) * 180 / PI);
+    if(cp.c_color.x < cp.c_teamColor.x)
+      f.ori = 180 + (cp.c_color.y > cp.c_teamColor.y ? angle : -angle);
+    else  
+      f.ori = cp.c_color.y > cp.c_teamColor.y ? 360 - angle : angle;
+  }
 
   if(f.firstTimeFlag){
     f.dx = 0;
     f.dy = 0;
     f.firstTimeFlag = false;
   }else{
-    timeDiff = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - *f.lastTime).count();
+    timeDiff = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - f.lastTime).count();
     f.dx = (f.x - lastX) / timeDiff;
     f.dy = (f.y - lastY) / timeDiff;
   }
-
   std::cout << "x: " << f.x << "  y: " << f.y << "  dx: " << f.dx << "  dy: " << f.dy;
   std::cout << "  ori: " << f.ori << std::endl;
 
   // --------- TESTING DX & DY --------------------
-  // std::chrono::time_point<std::chrono::system_clock> timeNow = std::chrono::system_clock::now();
-  // f.lastTime = &timeNow;
-
-  // // ------------------------------------
-  // std::this_thread::sleep_for(std::chrono::milliseconds(500));
-  // lastX = f.x;
-  // lastY = f.y;
-  // f.x += 120;
-  // f.y += 80;
-  // timeDiff = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - *f.lastTime).count();
-  // f.dx = (f.x - lastX) / timeDiff;
-  // f.dy = (f.y - lastY) / timeDiff;
-
-  // std::cout << "------------------------------------------\n";
-  // std::cout << "x: " << f.x << "  y: " << f.y << "  dx: " << f.dx << "  dy: " << f.dy;
-  // std::cout << "  ori: " << f.ori << std::endl;
-
+  std::chrono::time_point<std::chrono::system_clock> timeNow = std::chrono::system_clock::now();
+  f.lastTime = timeNow;
 }
