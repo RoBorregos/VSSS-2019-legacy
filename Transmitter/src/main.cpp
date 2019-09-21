@@ -1,35 +1,51 @@
+/* RoBorregos
+ * Tecnológico de Monterrey
+ * Monterrey, Nuevo León, México
+ * 
+ * RoBorregos Foxtrot, competing on:
+ * LARC - Latin American and Brazilian Robotics Competition
+ * VSSS - Very Small Size Soccer
+ * 
+ * 
+ * MAIN FILE FOR TRANSMITTER
+ * main.cpp
+ * 
+ * Last update: September 21, 2019
+ *              Ernesto Cervantes
+ */
+
 #include <Arduino.h>
 #include <String.h>
 #include "RCSwitch.h"
 
-RCSwitch mySwitch = RCSwitch();
+RCSwitch transmitter = RCSwitch();
 
 void setup()
 {
-
   Serial.begin(9600);
 
   // Transmitter is connected to Arduino Pin #10
-  mySwitch.enableTransmit(10);
+  transmitter.enableTransmit(10);
 
   // Optional set protocol (default is 1, will work for most outlets)
-  // mySwitch.setProtocol(2);
+  // transmitter.setProtocol(2);
 
   // Optional set pulse length.
-  // mySwitch.setPulseLength(320);
+  // transmitter.setPulseLength(320);
 
   // Optional set number of transmission repetitsions.
-  // mySwitch.setRepeatTransmit(15);
+  // transmitter.setRepeatTransmit(15);
 }
 
 void loop()
 {
+
   // byte velIzq = 155;  
   // byte velDer = 154;
   // unsigned long total = 0b0000000000000011;
   // total = (total << 8) | velIzq;
   // total = (total << 8) | velDer;
-  // mySwitch.send(total, 32);
+  // transmitter.send(total, 32);
   // Serial.println("");
 
   Serial.println("Izq: ");
@@ -43,6 +59,6 @@ void loop()
   unsigned long total = 0b0000000000000011;
   total = (total << 8) | velIzq;
   total = (total << 8) | velDer;
-  mySwitch.send(total, 32);
+  transmitter.send(total, 32);
   Serial.println("");
 }

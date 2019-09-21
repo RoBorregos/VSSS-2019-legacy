@@ -1,7 +1,23 @@
+/* RoBorregos
+ * Tecnológico de Monterrey
+ * Monterrey, Nuevo León, México
+ * 
+ * RoBorregos Foxtrot, competing on:
+ * LARC - Latin American and Brazilian Robotics Competition
+ * VSSS - Very Small Size Soccer
+ * 
+ * 
+ * MAIN FILE FOR RECEIVER
+ * main.cpp
+ * 
+ * Last update: September 21, 2019
+ *              Ernesto Cervantes
+ */
+
 #include <Arduino.h>
 #include "RCSwitch.h"
 
-RCSwitch mySwitch = RCSwitch();
+    RCSwitch mySwitch = RCSwitch();
 
 // Pines para motores
 #define MOTOR_IZQUIERDA_A 10
