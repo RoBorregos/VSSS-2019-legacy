@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <String.h>
 #include "RCSwitch.h"
 
 RCSwitch mySwitch = RCSwitch();
@@ -17,87 +18,31 @@ void setup()
   // Optional set pulse length.
   // mySwitch.setPulseLength(320);
 
-  // Optional set number of transmission repetitions.
+  // Optional set number of transmission repetitsions.
   // mySwitch.setRepeatTransmit(15);
 }
 
 void loop()
 {
-  mySwitch.send(1, 24);
-  mySwitch.send(3, 24);
-  delay(2000);
-  mySwitch.send(0, 24);
-  mySwitch.send(2, 24);
-  delay(2000);
+  // byte velIzq = 155;  
+  // byte velDer = 154;
+  // unsigned long total = 0b0000000000000011;
+  // total = (total << 8) | velIzq;
+  // total = (total << 8) | velDer;
+  // mySwitch.send(total, 32);
+  // Serial.println("");
 
-// /* See Example: TypeA_WithDIPSwitches */
-// mySwitch.switchOn("11111", "00010");
-// delay(1000);
-// mySwitch.switchOff("11111", "00010");
-// delay(1000);
-
-// /* Same switch as above, but using decimal code */
-// mySwitch.send(1, 24);
-// mySwitch.send(3, 24);
-// delay(1000);
-// mySwitch.send(0, 24);
-// mySwitch.send(2, 24);
-// delay(1000);
-// mySwitch.send(5396, 24);
-// delay(1000);
-
-// /* Same switch as above, but using binary code */
-// mySwitch.send("000000000001010100010001");
-// delay(1000);
-// mySwitch.send("000000000001010100010100");
-// delay(1000);
-
-// /* Same switch as above, but tri-state code */
-// mySwitch.sendTriState("00000FFF0F0F");
-// delay(1000);
-// mySwitch.sendTriState("00000FFF0FF0");
-// delay(1000);
-
-// delay(20000);
+  Serial.println("Izq: ");
+  while(!Serial.available());
+  byte velIzq = Serial.read();  
+  String x = Serial.readString();  
+  Serial.println("Der: ");
+  while(!Serial.available());
+  byte velDer = Serial.read();
+  x = Serial.readString();  
+  unsigned long total = 0b0000000000000011;
+  total = (total << 8) | velIzq;
+  total = (total << 8) | velDer;
+  mySwitch.send(total, 32);
+  Serial.println("");
 }
-
-
-// Pines para motores
-// #define MOTOR_IZQUIERDA_A 3
-// #define MOTOR_IZQUIERDA_B 9
-// #define MOTOR_DERECHA_A 10
-// #define MOTOR_DERECHA_B 11
-
-// void setup()
-// {
-//   pinMode(MOTOR_DERECHA_A, OUTPUT);
-//   pinMode(MOTOR_DERECHA_B, OUTPUT);
-//   pinMode(MOTOR_IZQUIERDA_A, OUTPUT);
-//   pinMode(MOTOR_IZQUIERDA_B, OUTPUT);
-
-//   mySwitch.enableReceive(0); // Receiver on interrupt 0 => that is pin #2
-//   // Serial.begin(9600);
-// }
-
-// void loop()
-// {
-//   if (mySwitch.available())
-//   {
-//     byte vel = mySwitch.getReceivedValue();
-    
-//     if(vel >= 2) {
-//       vel -= 2;
-//       analogWrite(MOTOR_DERECHA_A, LOW);
-//       analogWrite(MOTOR_DERECHA_B, vel);
-//     } else {
-//       analogWrite(MOTOR_IZQUIERDA_A, LOW);
-//       analogWrite(MOTOR_IZQUIERDA_B, vel);
-//     }
-
-//     // Serial.print(mySwitch.getReceivedValue());
-//     // Serial.print(mySwitch.getReceivedBitlength());
-//     // Serial.println(mySwitch.getReceivedProtocol());
-
-//     mySwitch.resetAvailable();
-//   }
-// }
