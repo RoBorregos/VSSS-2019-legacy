@@ -16,6 +16,24 @@
 
 #include "Information.h"
 
+void Information::setRobotId(uint32_t &data, uint8_t id)
+{
+    id &= 0x07;
+    uint32_t id32 = id;
+    clearRobotId(data);
+    data |= (id32 << 21);
+}
+
+void Information::clearRobotId(uint32_t &data)
+{
+    data &= 0xFF1FFFFF;
+}
+
+uint8_t Information::getRobotId(uint32_t data)
+{
+    return (data | 0x00E00000) >> 21;
+}
+
 void Information::setStop(uint32_t &data)
 {
     data |= 0x00100000;

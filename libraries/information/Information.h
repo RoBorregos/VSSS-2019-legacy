@@ -22,6 +22,10 @@
 class Information
 {
 public:
+    static void setRobotId(uint32_t &data, uint8_t id);
+    static void clearRobotId(uint32_t &data);
+    static uint8_t getRobotId(uint32_t data);
+
     static void setStop(uint32_t &data);
     static void setSpeedLeft(uint32_t &data, bool forward, uint8_t speed);
     static void setSpeedRight(uint32_t &data, bool forward, uint8_t speed);
@@ -37,8 +41,8 @@ public:
     static inline bool isLeftForward(uint32_t data);
     static inline bool isRightForward(uint32_t data);
 
-    static uint8_t speedLeft(uint32_t data);
-    static uint8_t speedRight(uint32_t data);
+    static uint8_t getSpeedLeft(uint32_t data);
+    static uint8_t getSpeedRight(uint32_t data);
 };
 
 #endif
