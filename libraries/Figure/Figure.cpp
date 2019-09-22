@@ -21,3 +21,8 @@ Figure::Figure(float x, float y, float radius)
     this->y = y;
     this->radius = radius;
 }
+
+float Figure::getDistance(Figure a)
+{
+    return sqrt(pow(this->x - a.x, 2) + pow(this->y - a.y, 2));
+}
