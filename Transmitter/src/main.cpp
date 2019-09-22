@@ -17,6 +17,7 @@
 #include <Arduino.h>
 #include <String.h>
 #include "RCSwitch.h"
+#include "Information.h"
 
 RCSwitch transmitter = RCSwitch();
 

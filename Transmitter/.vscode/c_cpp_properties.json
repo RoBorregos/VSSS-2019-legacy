@@ -7,7 +7,7 @@
             "name": "Win32",
             "includePath": [
                 "c:/Users/netoc/Desktop/VSSS_2019/Transmitter/src",
-                "c:/Users/netoc/Desktop/VSSS_2019/Transmitter/lib/rc-switch-master",
+                "c:/Users/netoc/Desktop/VSSS_2019/libraries/rc-switch-master",
                 "C:/Users/netoc/.platformio/packages/framework-arduinoavr/cores/arduino",
                 "C:/Users/netoc/.platformio/packages/framework-arduinoavr/variants/eightanaloginputs",
                 "C:/Users/netoc/.platformio/lib/PinChangeInterruptHandler_ID1499",
@@ -25,7 +25,7 @@
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
                     "c:/Users/netoc/Desktop/VSSS_2019/Transmitter/src",
-                    "c:/Users/netoc/Desktop/VSSS_2019/Transmitter/lib/rc-switch-master",
+                    "c:/Users/netoc/Desktop/VSSS_2019/libraries/rc-switch-master",
                     "C:/Users/netoc/.platformio/packages/framework-arduinoavr/cores/arduino",
                     "C:/Users/netoc/.platformio/packages/framework-arduinoavr/variants/eightanaloginputs",
                     "C:/Users/netoc/.platformio/lib/PinChangeInterruptHandler_ID1499",
