@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"name": "VSSS_2019",
+			"path": "."
+		},
+		{
+			"name": "Transmitter",
+			"path": "Transmitter"
+		},
+		{
+			"name": "Receiver",
+			"path": "Receiver"
+		}
+	],
+	"settings": {
+		"terminal.integrated.env.windows": {
+			"PATH": "C:\\Users\\netoc\\.platformio\\penv\\Scripts;C:\\Users\\netoc\\.platformio\\penv;C:\\Program Files (x86)\\Microsoft SDKs\\Azure\\CLI2\\wbin;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\PuTTY\\;C:\\Program Files\\Git\\cmd;C:\\Users\\netoc\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\netoc\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Program Files (x86)\\GnuWin32\\bin;C:\\MinGW\\bin;C:\\Users\\netoc\\OneDrive\\Desktop\\flutter\\bin;C:\\Program Files (x86)\\Microsoft SDKs\\Azure\\CLI2\\wbin;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\PuTTY\\;C:\\Program Files\\Git\\cmd;C:\\Users\\netoc\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\netoc\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Program Files (x86)\\GnuWin32\\bin;C:\\MinGW\\bin;C:\\Users\\netoc\\OneDrive\\Desktop\\flutter\\bin",
+			"PLATFORMIO_CALLER": "vscode"
+		},
+		"C_Cpp.errorSquiggles": "Enabled"
+	}
+}

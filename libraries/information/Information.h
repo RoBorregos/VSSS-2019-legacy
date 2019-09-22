@@ -1,18 +1,18 @@
-/* RoBorregos
- * Tecnológico de Monterrey
- * Monterrey, Nuevo León, México
- * 
- * RoBorregos Foxtrot, competing on:
- * LARC - Latin American and Brazilian Robotics Competition
- * VSSS - Very Small Size Soccer
- * 
- * 
- * INFORMATION
- * Information.h
- * 
- * Last update: September 21, 2019
- *              Ernesto Cervantes
- */
+//  RoBorregos
+//  Tecnológico de Monterrey
+//  Monterrey, Nuevo León, México
+//  
+//  RoBorregos Foxtrot, competing on:
+//  LARC - Latin American and Brazilian Robotics Competition
+//  VSSS - Very Small Size Soccer
+//  
+//  
+//  INFORMATION
+//  Information.h
+//  
+//  Last update: September 21, 2019
+//               Ernesto Cervantes
+ 
 
 #ifndef INFORMATION_H
 #define INFORMATION_H
