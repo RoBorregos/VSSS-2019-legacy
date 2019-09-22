@@ -96,12 +96,12 @@ bool Information::isRightForward(uint32_t data)
     return data & 0x00010000;
 }
 
-uint8_t Information::speedLeft(uint32_t data)
+uint8_t Information::getSpeedLeft(uint32_t data)
 {
     return (uint8_t) ((data & 0x0000FF00) >> 8);
 }
 
-uint8_t Information::speedRight(uint32_t data)
+uint8_t Information::getSpeedRight(uint32_t data)
 {
     return (uint8_t) (data & 0x000000FF);
 }
