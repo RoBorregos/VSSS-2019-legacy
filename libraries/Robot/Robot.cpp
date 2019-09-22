@@ -7,17 +7,17 @@
 //  VSSS - Very Small Size Soccer
 //  
 //  
-//  FIGURE
-//  Figure.h
+//  ROBOT
+//  Robot.h
 //  
 //  Last update: September 22, 2019
 //               Ernesto Cervantes
 
-#include "Figure.h"
+#include "Robot.h"
 
-Figure::Figure(float x, float y, float radius)
+Robot::Robot(float x, float y, float radius, uint8_t id, uint8_t role, bool isOurs): Figure(x, y, radius)
 {
-    this->x = x;
-    this->y = y;
-    this->radius = radius;
+    this->id = id;
+    this->role = role;
+    this->isOurs = isOurs;
 }

@@ -7,17 +7,28 @@
 //  VSSS - Very Small Size Soccer
 //  
 //  
-//  FIGURE
-//  Figure.h
+//  ROBOT
+//  Robot.h
 //  
 //  Last update: September 22, 2019
 //               Ernesto Cervantes
 
-#include "Figure.h"
+#ifndef ROBOT_H
+#define ROBOT_H
 
-Figure::Figure(float x, float y, float radius)
+#include "Figure.h"
+#include "stdint.h"
+
+enum role_types{goalkeeper, defense, attacker};
+
+class Robot : public Figure
 {
-    this->x = x;
-    this->y = y;
-    this->radius = radius;
-}
+public:
+    Robot(float x, float y, float radius, uint8_t id, uint8_t role, bool isOurs);
+
+private:
+    uint8_t id, role;
+    bool isOurs;
+};
+
+#endif
