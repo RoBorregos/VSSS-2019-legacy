@@ -3,23 +3,24 @@
 
 #include "Strategy.h"
 #include "Robot.h"
+#include "Control.h"
 #include <vector>
-
-using namespace std;
 
 class Game
 {
 public:
     Game();
     void initializeGame();
+    void play();
 
 private:
     Strategy strategy;
-    vector<Robot*> ourRobots;
-    vector<Robot*> theirRobots;
+    std::vector<Robot*> ourRobots;
+    std::vector<Robot*> theirRobots;
     Figure* ball;
 
     float timeRemaing;
+    uint8_t half;
 };
 
 #endif // GAMEH_H
