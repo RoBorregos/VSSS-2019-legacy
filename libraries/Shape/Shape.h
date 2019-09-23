@@ -7,25 +7,30 @@
 //  VSSS - Very Small Size Soccer
 //  
 //  
-//  ROBOT
-//  Robot.h
+//  SHAPE
+//  Shape.h
 //  
 //  Last update: September 22, 2019
 //               Osvaldo Alvarez
 
-#ifndef ROBOT_H
-#define ROBOT_H
+#ifndef SHAPE_H
+#define SHAPE_H
 
-#include "../Figure/Figure.h"
 #include "stdint.h"
+#include <chrono>
 
-class Robot : public Figure {
+class Shape{
     public:
-        Robot(): Figure(){
-            //constructor
+        Shape(){
+            xAct = 0;
+            yAct = 0;
+            dy = 0;
+            dx = 0;
+            ori = 0;
         }
 
-        float xFin, yFin, ori;
+        float xAct, yAct, xFin, yFin, dx, dy, ori;
+        std::chrono::time_point<std::chrono::system_clock> lastTime;
         uint8_t id, role;
 };
 

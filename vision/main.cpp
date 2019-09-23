@@ -22,8 +22,12 @@ int main(int argc, char** argv){
   cv::Mat image;
   cv::VideoCapture cap;
   std::string teamColor;
-  std::vector<Robot> allies, enemies;
-  Figure ball;
+  std::vector<Shape> allies(3), enemies(3);
+  Shape ball;
+  float circleMinArea = 0.03, circleMaxArea = 0.08, maxHyp = 40;
+
+  std::cout << std::fixed;
+  std::cout << std::setprecision(3);
 
   bool stat = inputValidation(argc, argv, image, cap);
   if(!image.data){
@@ -36,14 +40,16 @@ int main(int argc, char** argv){
   teamColor = teamColor == "yellow" ? teamColor : "blue";
   std::cout << "Team color is " << teamColor << "!\n\n";
 
-  Vision(image, teamColor, allies, enemies, ball);
+  Vision vision = Vision(image, teamColor, allies, enemies, ball);
+  vision.settings(circleMinArea, circleMaxArea, maxHyp);
   cv::namedWindow("image", cv::WINDOW_AUTOSIZE );
 
   while(true){
     if(stat)
       cap >> image;
       //cv::resize(image, image, cv::Size(), 0.5, 0.5);
-      //cv::imshow("image", image);
+      cv::imshow("image", image);
+      vision.update();
       
     // Exit program if no image was found
     if(image.empty()){
@@ -51,6 +57,8 @@ int main(int argc, char** argv){
       break;
     }
 
+    if(cv::waitKey(30) == 27)
+      break;
   }
   return 0;
 }
