@@ -21,32 +21,36 @@ bool inputValidation(int &argc, char** &argv, cv::Mat &image, cv::VideoCapture &
 int main(int argc, char** argv){
   cv::Mat image;
   cv::VideoCapture cap;
-  double circleMinArea = 0.03, circleMaxArea = 0.08, maxHyp = 40;
-
-  std::cout << std::fixed;
-  std::cout << std::setprecision(3);
+  std::string teamColor;
+  std::vector<Robot> allies, enemies;
+  Figure ball;
 
   bool stat = inputValidation(argc, argv, image, cap);
   if(!image.data){
-    std::cout <<  "Could not open or find the image/video" << std::endl ;
+    std::cout <<  "Could not open or find the image/video\n";
     return -1;
   }
-  // cv::resize(image, image, cv::Size(), 0.46, 0.46);
 
-  Vision(image, "blue");
-  Vision::settings(circleMinArea, circleMaxArea, maxHyp);
+  std::cout << "Define team color (blue/yellow):\n";
+  std::cin >> teamColor;
+  teamColor = teamColor == "yellow" ? teamColor : "blue";
+  std::cout << "Team color is " << teamColor << "!\n\n";
+
+  Vision(image, teamColor, allies, enemies, ball);
+  cv::namedWindow("image", cv::WINDOW_AUTOSIZE );
 
   while(true){
     if(stat)
       cap >> image;
-    
+      //cv::resize(image, image, cv::Size(), 0.5, 0.5);
+      //cv::imshow("image", image);
+      
     // Exit program if no image was found
     if(image.empty()){
       std::cout << "No image has been found\n";
       break;
     }
 
-    Vision::update();
   }
   return 0;
 }

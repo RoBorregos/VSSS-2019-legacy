@@ -11,21 +11,22 @@
 //  Figure.h
 //  
 //  Last update: September 22, 2019
-//               Ernesto Cervantes
+//               Osvaldo Alvarez
 
 #ifndef FIGURE_H
 #define FIGURE_H
 
-#include <cmath>
+#include <chrono>
 
-class Figure
-{
-public:
-    Figure(float x, float y, float radius);
-    float getDistance(Figure a);
+class Figure {
+    public:
+        Figure(){
+            dy = 0;
+            dx = 0;
+        }
 
-private:
-    float x, y, radius;
+        float xAct, yAct, dy, dx;
+        std::chrono::time_point<std::chrono::system_clock> lastTime;
 };
 
 #endif

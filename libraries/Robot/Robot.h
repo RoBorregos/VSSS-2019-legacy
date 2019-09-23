@@ -11,24 +11,22 @@
 //  Robot.h
 //  
 //  Last update: September 22, 2019
-//               Ernesto Cervantes
+//               Osvaldo Alvarez
 
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#include "Figure.h"
+#include "../Figure/Figure.h"
 #include "stdint.h"
 
-enum role_types{goalkeeper, defense, attacker};
+class Robot : public Figure {
+    public:
+        Robot(): Figure(){
+            //constructor
+        }
 
-class Robot : public Figure
-{
-public:
-    Robot(float x, float y, float radius, uint8_t id, uint8_t role, bool isOurs);
-
-private:
-    uint8_t id, role;
-    bool isOurs;
+        float xFin, yFin, ori;
+        uint8_t id, role;
 };
 
 #endif
