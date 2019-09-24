@@ -1,0 +1,147 @@
+#include "packet.h"
+
+#include <climits>
+#include <cstring>
+#include <fcntl.h>
+#include <iostream> 
+#include <string>
+#include <termios.h>
+
+constexpr uint32_t kLeftSpeedInitialBit = 8;
+constexpr uint32_t kForwardRightInitialBit = 16;
+constexpr uint32_t kForwardLeftInitialBit = 17;
+constexpr uint32_t kEnableRightInitialBit = 18;
+constexpr uint32_t kEnableLeftInitialBit = 19;
+constexpr uint32_t kStopInitialBit = 20;
+constexpr uint32_t kIdInitialBit = 21;
+
+namespace {
+    bool SetInterfaceAttributes(int fd, int speed, int parity) {
+        struct termios tty;
+        memset(&tty, 0, sizeof tty);
+        if (tcgetattr(fd, &tty) != 0) {
+            return false;
+        }
+
+        cfsetospeed(&tty, speed);
+        cfsetispeed(&tty, speed);
+
+        tty.c_cflag = (tty.c_cflag & ~CSIZE) | CS8;     // 8-bit chars
+        // disable IGNBRK for mismatched speed tests; otherwise receive break
+        // as \000 chars
+        tty.c_iflag &= ~IGNBRK;         // disable break processing
+        tty.c_lflag = 0;                // no signaling chars, no echo,
+                                        // no canonical processing
+        tty.c_oflag = 0;                // no remapping, no delays
+        tty.c_cc[VMIN]  = 0;            // read doesn't block
+        tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
+
+        tty.c_iflag &= ~(IXON | IXOFF | IXANY); // shut off xon/xoff ctrl
+
+        tty.c_cflag |= (CLOCAL | CREAD);// ignore modem controls,
+                                        // enable reading
+        tty.c_cflag &= ~(PARENB | PARODD);      // shut off parity
+        tty.c_cflag |= parity;
+        tty.c_cflag &= ~CSTOPB;
+        tty.c_cflag &= ~CRTSCTS;
+
+        if (tcsetattr(fd, TCSANOW, &tty) != 0) {
+            return false;
+        }
+        return true;
+    }
+
+    bool SetBlocking(int fd, int should_block) {
+        struct termios tty;
+        memset(&tty, 0, sizeof tty);
+        if (tcgetattr(fd, &tty) != 0) {
+            return false;
+        }
+
+        tty.c_cc[VMIN]  = should_block ? 1 : 0;
+        tty.c_cc[VTIME] = 5; // 0.5 seconds read timeout
+        return true;
+    }
+
+} // namespace
+
+bool Packet::Configure(std::string port){
+    file_descriptor_ = open(port.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
+    if (file_descriptor_ < 0 
+      || !SetInterfaceAttributes(file_descriptor_, B9600, 0)
+      || !SetBlocking(file_descriptor_, 0)) {
+        return false;
+    }
+    return true;
+}
+
+bool Packet::SendPacket() {
+    if (file_descriptor_ == INT_MIN){
+        std::cout << "Make a successful call to Configure first" << std::endl;
+        return false;
+    }
+    write (file_descriptor_, static_cast<void*>(&packet_), sizeof(packet_));
+
+    return true;
+}
+
+void Packet::SetRightSpeed(unsigned char right_speed) {
+    packet_ = (packet_ & 0xFFFFFF00) | right_speed;
+}
+
+void Packet::SetLeftSpeed(unsigned char left_speed) {
+    packet_ = (packet_ & 0xFFFF00FF) | (left_speed << kLeftSpeedInitialBit);
+}
+
+void Packet::SetForwardRight() {
+    packet_ |= (1 << kForwardRightInitialBit);
+}
+
+void Packet::ClearForwardRight() {
+    packet_ &= ~(1 << kForwardRightInitialBit);
+}
+
+void Packet::SetForwardLeft() {
+    packet_ |= (1 << kForwardLeftInitialBit);
+}
+
+void Packet::ClearForwardLeft() {
+    packet_ &= ~(1 << kForwardLeftInitialBit);
+}
+
+void Packet::SetEnableRight() {
+    packet_ |= (1 << kEnableRightInitialBit);
+}
+
+void Packet::ClearEnableRight() {
+    packet_ &= ~(1 << kEnableRightInitialBit);
+}
+
+void Packet::SetEnableLeft() {
+    packet_ |= (1 << kEnableLeftInitialBit);
+}
+
+void Packet::ClearEnableLeft() {
+    packet_ &= ~(1 << kEnableLeftInitialBit);
+}
+
+void Packet::SetStop() {
+    packet_ |= (1 << kStopInitialBit);
+}
+
+void Packet::ClearStop() {
+    packet_ &= ~(1 << kStopInitialBit);
+}
+
+void Packet::SetId(Id id) {
+    packet_ &= ~(7 << kIdInitialBit);
+    packet_ |= (id << kIdInitialBit);
+}
+
+void Packet::ClearPacket() {
+    packet_ = 0;
+}
+
+uint32_t Packet::GetPacket() {
+    return packet_;
+}
