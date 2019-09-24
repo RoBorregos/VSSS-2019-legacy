@@ -186,6 +186,13 @@ bool CheckPacket() {
     if (packet.GetPacket() != 3098020) {
         return false;
     }
+
+    packet.SetId(MIDFIELDER);
+    packet.RightMotor(200, 1);
+    packet.LeftMotor(22, 0, 0);
+    if (packet.GetPacket() != 4527816) {
+        return false;
+    }
     
     return true;
 }

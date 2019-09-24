@@ -1,10 +1,7 @@
 #ifndef PACKET_H
 #define PACKET_H
 
-#include <climits>
 #include <stdint.h>
-#include <string>
-#include <unistd.h>
 
 enum Id{
     GOALIE,
@@ -15,7 +12,7 @@ enum Id{
 // Packet
 // First Byte = Right Motor PWM
 // Second Byte = Left Motor PWM
-// 17th bit =  Forward Right
+// 17th bit =  Forward RigPacketht
 // 18th bit = Forward Left
 // 19th bit = Enable Right
 // 20th bit = Enable Left
@@ -25,15 +22,11 @@ enum Id{
 class Packet {
   public:
     Packet() {};
-    ~Packet() {
-        close(file_descriptor_);
-    };
+    
     // Not copyable or movable
     Packet(const Packet&) = delete;
     Packet& operator=(const Packet&) = delete;
 
-    bool Configure(std::string port);
-    bool SendPacket();
     uint32_t GetPacket();
 
     void SetRightSpeed(unsigned char rightSpeed);
@@ -51,9 +44,11 @@ class Packet {
     void SetId(Id id);
     void ClearPacket();
 
+    void RightMotor(unsigned char speed, bool forward, bool enable = true);
+    void LeftMotor(unsigned char speed, bool forward, bool enable = true);
+
   private:
     uint32_t packet_ = 0;
-    int file_descriptor_ = INT_MIN;
 };
 
 #endif
