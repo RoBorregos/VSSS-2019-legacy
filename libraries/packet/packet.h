@@ -12,8 +12,6 @@ enum Id{
     MIDFIELDER
 };
 
-
-
 // Packet
 // First Byte = Right Motor PWM
 // Second Byte = Left Motor PWM
