@@ -181,44 +181,31 @@ std::vector<std::pair<cv::Mat, cv::Moments>> selectiveSegmentation(cv::Mat& imag
 }
 
 int main(int argc, char** argv){
-    // cv::VideoCapture camera(0); 
-    // if(!camera.isOpened()) {
-    //     std::cout << "Error opening video stream" << std::endl; 
-    //     return -1; 
-    // } 
-
     const cv::Mat bgrImage = cv::imread("images/robot.jpg", cv::IMREAD_COLOR);
-    // char key = (char)cv::waitKey(1);
-    // while(key != 27) {
-        // cv::Mat bgrImage;
-        // camera >> bgrImage;
-        cv::imshow("bgrImage", bgrImage);
-        // key = (char)cv::waitKey(1);
+    cv::imshow("bgrImage", bgrImage);
 
-        auto greenObjects = filterByColor(bgrImage, "color_limits/green_limits.txt");
-        auto yellowObjects = filterByColor(bgrImage, "color_limits/yellow_limits.txt");
+    auto greenObjects = filterByColor(bgrImage, "color_limits/green_limits.txt");
+    auto yellowObjects = filterByColor(bgrImage, "color_limits/yellow_limits.txt");
 
-        cv::threshold(greenObjects, greenObjects, 0, 255, 0);
-        auto bynaryGreenCircles = selectiveSegmentation(greenObjects);
-        cv::threshold(yellowObjects, yellowObjects, 0, 255, 0);
-        auto bynaryYellowCircles = selectiveSegmentation(yellowObjects);
+    cv::threshold(greenObjects, greenObjects, 0, 255, 0);
+    auto bynaryGreenCircles = selectiveSegmentation(greenObjects);
+    cv::threshold(yellowObjects, yellowObjects, 0, 255, 0);
+    auto bynaryYellowCircles = selectiveSegmentation(yellowObjects);
 
-        cv::Mat greenAndYellowCircles(bgrImage.rows, bgrImage.cols, CV_8UC3, 
-          cv::Scalar(0,0,0));
-        for (auto yellowCircle : bynaryYellowCircles) {
-            cv::cvtColor(yellowCircle.first,yellowCircle.first, cv::COLOR_GRAY2BGR);
-            cv::bitwise_or(greenAndYellowCircles, yellowCircle.first, 
-              greenAndYellowCircles);
-            cv::bitwise_and(bgrImage, greenAndYellowCircles, greenAndYellowCircles);
-        }
-        for (auto greenCircle : bynaryGreenCircles) {
-            cv::cvtColor(greenCircle.first,greenCircle.first, cv::COLOR_GRAY2BGR);
-            cv::bitwise_or(greenAndYellowCircles, greenCircle.first, 
-              greenAndYellowCircles);
-            cv::bitwise_and(bgrImage, greenAndYellowCircles, greenAndYellowCircles);
-        }
-        cv::imshow("greenAndYellowCircles", greenAndYellowCircles);
-    // }
+    cv::Mat greenAndYellowCircles(bgrImage.rows, bgrImage.cols, CV_8UC3, cv::Scalar(0,0,0));
+    for (auto yellowCircle : bynaryYellowCircles) {
+        cv::cvtColor(yellowCircle.first,yellowCircle.first, cv::COLOR_GRAY2BGR);
+        cv::bitwise_or(greenAndYellowCircles, yellowCircle.first, 
+          greenAndYellowCircles);
+        cv::bitwise_and(bgrImage, greenAndYellowCircles, greenAndYellowCircles);
+    }
+    for (auto greenCircle : bynaryGreenCircles) {
+        cv::cvtColor(greenCircle.first,greenCircle.first, cv::COLOR_GRAY2BGR);
+        cv::bitwise_or(greenAndYellowCircles, greenCircle.first, 
+          greenAndYellowCircles);
+        cv::bitwise_and(bgrImage, greenAndYellowCircles, greenAndYellowCircles);
+    }
+    cv::imshow("greenAndYellowCircles", greenAndYellowCircles);
 
     cv::waitKey(0);
     cv::destroyAllWindows();
