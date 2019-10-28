@@ -5,9 +5,9 @@
 #include <utility>
 #include <vector>
 
-#include "libraries/vision/circle_detection.h"
 #include "libraries/packet/packet.h"
 #include "libraries/serial_transmitt/serial_transmitt.h"
+#include "libraries/vision/circle_detection.h"
 
 int main(int argc, char** argv) {
     const cv::Mat bgrImage = cv::imread(
@@ -26,6 +26,19 @@ int main(int argc, char** argv) {
         cv::waitKey(0);
     }
 
+    CircleDetection greenCircles;
+    greenCircles.loadImage(bgrImage);
+    greenCircles.setMinM00(100000);
+
+    auto greenCirclesWithMoments = greenCircles.circlesSegmentation(
+      "libraries/vision/color_limits/green_limits.txt");
+
+
+    for (auto greenCircle : greenCirclesWithMoments) {
+        cv::imshow("greenCircle", greenCircle.first);
+        cv::waitKey(0);
+    }
+
     SerialTransmitt serialTransmitt;
     // Check the port with ls on /dev
     if (!serialTransmitt.Configure("/dev/ttyUSB0")) {
@@ -33,7 +46,7 @@ int main(int argc, char** argv) {
         return -1;
     }
     
-    if (yellowCirclesWithMoments.size() > 0) {
+    if (yellowCirclesWithMoments.size() > 0 && greenCirclesWithMoments.size() > 0) {
         Packet packet;
         packet.RightMotor(100, 1);
         packet.LeftMotor(150, 0, 0);
