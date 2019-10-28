@@ -98,16 +98,15 @@ std::vector<std::pair<cv::Mat, cv::Moments>> CircleDetection::selectiveSegmentat
                 cv::Mat object;
                 cv::Moments moment = expandColor(row, col, image, object);
                 if (moment.m00 > minM00) {
-                    cv::Mat circleTemplate = cv::imread("templates_images/circle.jpg", cv::IMREAD_COLOR);
-                    // cv::imshow("circleTemplate", circleTemplate);
-                    // cv::waitKey(0);
-                    // cv:erode(circleTemplate, circleTemplate, cv::Mat());
-                    // cv::threshold(circleTemplate, circleTemplate, 0, 255, 0);
-                    // cv::cvtColor(circleTemplate, circleTemplate, cv::COLOR_BGR2GRAY);
-                    // if (cv::matchShapes(circleTemplate, object, CV_CONTOURS_MATCH_I2, 0) 
-                    //   < 0.10 ) {
+                    cv::Mat circleTemplate = cv::imread(
+                      "libraries/vision/templates_images/circle.jpg", cv::IMREAD_COLOR);
+                    cv:erode(circleTemplate, circleTemplate, cv::Mat());
+                    cv::threshold(circleTemplate, circleTemplate, 0, 255, 0);
+                    cv::cvtColor(circleTemplate, circleTemplate, cv::COLOR_BGR2GRAY);
+                    if (cv::matchShapes(circleTemplate, object, CV_CONTOURS_MATCH_I2, 0) 
+                      < 0.05 ) {
                         objects.push_back(std::make_pair(object, moment));
-                    // }
+                    }
                 }
             }
         }
