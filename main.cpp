@@ -19,9 +19,11 @@ int main(int argc, char** argv) {
 
     auto yellowCirclesWithMoments = yellowCircles.circlesSegmentation(
       "libraries/vision/color_limits/yellow_limits.txt");
-
-
     for (auto yellowCircle : yellowCirclesWithMoments) {
+        cv::circle(yellowCircle.first, cv::Point(
+            yellowCircle.second.m10 / yellowCircle.second.m00, 
+            yellowCircle.second.m01 / yellowCircle.second.m00), 
+            10, cv::Scalar(255, 255, 255), -1);
         cv::imshow("yellowCircle", yellowCircle.first);
         cv::waitKey(0);
     }
@@ -32,9 +34,11 @@ int main(int argc, char** argv) {
 
     auto greenCirclesWithMoments = greenCircles.circlesSegmentation(
       "libraries/vision/color_limits/green_limits.txt");
-
-
     for (auto greenCircle : greenCirclesWithMoments) {
+        cv::circle(greenCircle.first, cv::Point(
+          greenCircle.second.m10 / greenCircle.second.m00, 
+          greenCircle.second.m01 / greenCircle.second.m00), 
+          10, cv::Scalar(255, 255, 255), -1);
         cv::imshow("greenCircle", greenCircle.first);
         cv::waitKey(0);
     }
