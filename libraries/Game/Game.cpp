@@ -26,9 +26,10 @@ void Game::play()
 {
     while (true)
     {
-        // vision.update();
-        // strategy.defineFinalPoints();
+        vision.update();
+        
+        strategy.defineFinalPoints();
         // pathPlanning.defineInmediatePoints();
-        Control::triggerActions();
+        Control::triggerdddActeions();
     }
 }

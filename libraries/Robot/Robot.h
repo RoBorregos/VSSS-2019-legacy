@@ -27,6 +27,10 @@ class Robot : public Figure {
 
         float xFin, yFin, ori;
         uint8_t id, role;
+
+        void test(Figure x) {
+            x.
+        }
 };
 
 #endif
