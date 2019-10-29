@@ -18,18 +18,20 @@
 
 #include "stdint.h"
 #include <chrono>
+#include "Point.h"
 
 class Shape{
     public:
         Shape(){
-            xAct = 0;
-            yAct = 0;
+            currentPos = Point(0,0);
+            finalPos = Point(0,0);
             dy = 0;
             dx = 0;
             ori = 0;
         }
-
-        float xAct, yAct, xFin, yFin, dx, dy, ori;
+        
+        float dx, dy, ori;
+        Point currentPos, finalPos;
         std::chrono::time_point<std::chrono::system_clock> lastTime;
         uint8_t id, role;
 };

@@ -139,15 +139,15 @@ void Vision::updateValues(Shape &f, c_pair cp){
   long long timeDiff; 
 
   if(!centroidIsEmpty(cp)){
-    lastX = f.xAct;
-    lastY = f.yAct;
+    lastX = f.currentPos.x;
+    lastY = f.currentPos.y;
     xlen = cp.c_color.x - cp.c_teamColor.x;
     ylen = cp.c_color.y - cp.c_teamColor.y;
     xlen = xlen == 0 ? 0.000001 : xlen;
     ylen = ylen == 0 ? 0.000001 : ylen;
     
-    f.xAct = xlen/2 + cp.c_teamColor.x;
-    f.yAct = ylen/2 + cp.c_teamColor.y;
+    f.currentPos.x = xlen/2 + cp.c_teamColor.x;
+    f.currentPos.y = ylen/2 + cp.c_teamColor.y;
     
     if(&f != &ball){
       angle = (atan(fabs(ylen) / fabs(xlen)) * 180 / PI);
@@ -158,14 +158,14 @@ void Vision::updateValues(Shape &f, c_pair cp){
     }
 
     timeDiff = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - f.lastTime).count();
-    f.dx = (f.xAct - lastX) / timeDiff;
-    f.dy = (f.yAct - lastY) / timeDiff;
+    f.dx = (f.currentPos.x - lastX) / timeDiff;
+    f.dy = (f.currentPos.y - lastY) / timeDiff;
 
     // --------- TESTING DX & DY --------------------
     std::chrono::time_point<std::chrono::system_clock> timeNow = std::chrono::system_clock::now();
     f.lastTime = timeNow;
   }
-  std::cout << "x: " << f.xAct << "  y: " << f.yAct << "  dx: " << f.dx << "  dy: " << f.dy;
+  std::cout << "x: " << f.currentPos.x << "  y: " << f.currentPos.y << "  dx: " << f.dx << "  dy: " << f.dy;
   std::cout << "  ori: " << f.ori << std::endl;
 }
 

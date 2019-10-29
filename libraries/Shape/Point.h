@@ -1,23 +1,20 @@
 #include <math.h>
 #include <iostream>
 
-using namespace std;
-
 class Point{        
         
     public:
         Point();
-        Point(int x, int y);
+        Point(float x, float y);
         float distance(Point reference);
         void printData();
-        float x;
-        float y;
+        float x, y;
 
 };
 
 Point::Point(){}
 
-Point::Point(int x, int y)
+Point::Point(float x, float y)
 {
     this->x = x;
     this->y = y;
@@ -28,5 +25,5 @@ float Point::distance(Point ref){
 }
 
 void Point::printData(){
-    cout << "(" << x << "," << y << ")" << endl;
+    std::cout << "(" << x << "," << y << ")" << std::endl;
 }

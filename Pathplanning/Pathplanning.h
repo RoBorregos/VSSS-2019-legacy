@@ -1,4 +1,4 @@
-#include "Point.h"
+#include "../libraries/Shape/Point.h"
 #include <cstdlib>
 #include <climits>
 
@@ -67,12 +67,12 @@ int Pathplanning::isCollisionFree(Point p1, Point p2){
     for(int i = 0; i < N; i++){
         calculateParameters(p1, p2, obstacles[i], a, b, c);
         if(b*b - 4*a*c > 0){
-            cout << i << endl;
+            std::cout << i << std::endl;
             return i;
         }
 
     }
-    cout << -1 << endl;
+    std::cout << -1 << std::endl;
     return -1;
 }
 
@@ -124,16 +124,16 @@ void Pathplanning::shortPath(Point dep, Point obj){
 }
 
 void Pathplanning::printData(){
-    cout << "Position = ";
+    std::cout << "Position = ";
     position.printData();
-    cout << "Target = ";
+    std::cout << "Target = ";
     target.printData();
-    cout << "Radio = " << radio << endl;
-    cout << "Obstacles = " << endl;
+    std::cout << "Radio = " << radio << std::endl;
+    std::cout << "Obstacles = " << std::endl;
     for(int i = 0; i < N; i++)
         obstacles[i].printData();   
     for(int i = 0; i < trajectory.size; i++)
         trajectory.path[i].printData();
-    cout << "Distance = " << trajectory.distance << endl;
-    cout << "Feasible = " << trajectory.feasible << endl;
+    std::cout << "Distance = " << trajectory.distance << std::endl;
+    std::cout << "Feasible = " << trajectory.feasible << std::endl;
 }

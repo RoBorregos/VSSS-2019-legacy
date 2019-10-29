@@ -30,6 +30,7 @@ int main(int argc, char** argv){
   std::cout << std::setprecision(3);
 
   bool stat = inputValidation(argc, argv, image, cap);
+  
   if(!image.data){
     std::cout <<  "Could not open or find the image/video\n";
     return -1;

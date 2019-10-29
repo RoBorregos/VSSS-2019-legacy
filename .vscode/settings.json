@@ -18,6 +18,8 @@
     "string": "cpp",
     "iostream": "cpp",
     "complex": "cpp",
-    "chrono": "cpp"
+    "chrono": "cpp",
+    "climits": "cpp",
+    "filesystem": "cpp"
   }
 }
