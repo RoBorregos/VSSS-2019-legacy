@@ -1,4 +1,3 @@
-#include "libraries"
 #include "libraries/packet/packet.h"
 #include "libraries/serial_transmitt/serial_transmitt.h"
 #include "vision/Vision.h"
@@ -8,7 +7,7 @@ bool inputValidation(int &argc, char** &argv, cv::Mat &image, cv::VideoCapture &
   std::string path;
   
   if(argc > 1){
-    path = "media/" + std::string(argv[1]);
+    path = "vision/media/" + std::string(argv[1]);
     if(int(std::string(argv[1]).find(".png")) > -1){
       image = cv::imread(path, CV_LOAD_IMAGE_COLOR);
       return false;
@@ -28,7 +27,6 @@ int main(int argc, char** argv){
   Shape ball;
 
   // Vision
-  Vision vision;
   cv::Mat image;
   cv::VideoCapture cap;
   std::string teamColor;
@@ -53,15 +51,14 @@ int main(int argc, char** argv){
     std::cout <<  "Could not open or find the image/video\n";
     return -1;
   }
-  vision = Vision(image, teamColor, allies, enemies, ball);
-  vision.settings(circleMinArea, circleMaxArea, maxHyp);
+  Vision vision = Vision(image, teamColor, allies, enemies, ball);
   cv::namedWindow("image", cv::WINDOW_AUTOSIZE );
 
   // Communication
-  if (!serialTransmitt.Configure("/dev/ttyUSB0")) {
-      std::cout << "Check Port!" << std::endl;
-      return -1;
-  }
+  // if (!serialTransmitt.Configure("/dev/ttyUSB0")) {
+  //     std::cout << "Check Port!" << std::endl;
+  //     return -1;
+  // }
 
   // ---------------------- CALIBRATION --------------------------
 
@@ -78,7 +75,7 @@ int main(int argc, char** argv){
     else{
       // cv::imshow("image", image);
       vision.update();
-      vision.show();
+      // vision.show();
 
       // Strategy
 
