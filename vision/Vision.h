@@ -32,6 +32,7 @@ class Vision{
     Vision(cv::Mat &image, std::string teamColor, std::vector<Shape> &allies, std::vector<Shape> &enemies, Shape &ball);
     void settings(float &circleMinArea, float &circleMaxArea, float &maxHyp);
     void update();
+    void show();
 
   private:
     void setLimit(std::string name);
@@ -44,6 +45,7 @@ class Vision{
     c_pair getCentroidPair(std::vector<cv::Point2f> c_color, std::vector<cv::Point2f> c_target);
     void updateValues(Shape &f, c_pair cp);
     bool centroidIsEmpty(c_pair cp);
+    void draw(Shape shape, cv::Mat &image);
 
     std::vector<Shape> allies;
     std::vector<Shape> enemies;

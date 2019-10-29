@@ -72,24 +72,31 @@ int main(int argc, char** argv){
   while(true){
     // Vision
     cap >> image;
-    cv::imshow("image", image);
-    vision.update();
+    if(image.empty()){
+      std::cout << "No image has been found\n";
+    }
+    else{
+      // cv::imshow("image", image);
+      vision.update();
+      vision.show();
 
-    // Strategy
-    
-
-    // Pathplanning
+      // Strategy
 
 
-    // Control
+      // Pathplanning
 
 
-    // Communication
-    packet.RightMotor(100, 1); // demo
-    packet.LeftMotor(150, 0, 0); // demo
-    packet.SetId(GOALIE); // demo
+      // Control
 
-    serialTransmitt.SendPacket(packet.GetPacket());
+
+      // Communication
+      packet.RightMotor(100, 1); // demo
+      packet.LeftMotor(150, 0, 0); // demo
+      packet.SetId(GOALIE); // demo
+
+      serialTransmitt.SendPacket(packet.GetPacket());
+    }
+
 
     if(cv::waitKey(30) == 27)
       break;

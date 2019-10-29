@@ -197,6 +197,11 @@ bool Vision::centroidIsEmpty(c_pair cp){
   return cp.c_color.x == 0 && cp.c_color.y == 0 && cp.c_teamColor.x == 0 && cp.c_teamColor.y == 0;
 }
 
+void Vision::draw(Shape shape, cv::Mat &image){
+  cv::Point2f center = cv::Point2f(shape.currentPos.x, shape.currentPos.y);
+  cv::circle(image, center, 3, cv::Scalar(255, 255, 255), -1);
+}
+
 void Vision::settings(float &cMinArea, float &cMaxArea, float &maxH){
   minArea = cMinArea;
   maxArea = cMaxArea;
@@ -222,4 +227,15 @@ void Vision::update(){
   std::cout << "Ball\n";
   updateValues(ball, getCentroidPair(c_orange, c_orange));
   std::cout << "-------------------------------\n";
+}
+
+void Vision::show(){
+  cv::Mat drawnImg = (*original).clone();
+  
+  draw(allies[0], drawnImg);
+  draw(allies[1], drawnImg);
+  draw(allies[2], drawnImg);
+  draw(ball, drawnImg);
+  
+  cv::imshow("image", drawnImg);
 }
