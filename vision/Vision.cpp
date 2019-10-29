@@ -197,18 +197,20 @@ void Vision::updateValues(Shape &f, c_pair cp){
   std::cout << "x: " << f.currentPos.x << "  y: " << f.currentPos.y << "  dx: " << f.dx << "  dy: " << f.dy;
   std::cout << "  ori: " << f.ori << std::endl;
 
-  draw(f.currentPos, f.ori);  
+  draw(f.currentPos, cp, f.ori);  
 }
 
 bool Vision::centroidIsEmpty(c_pair cp){
   return cp.c_color.x == 0 && cp.c_color.y == 0 && cp.c_teamColor.x == 0 && cp.c_teamColor.y == 0;
 }
 
-void Vision::draw(Point ref, float ori){
+void Vision::draw(Point ref, c_pair cp, float ori){
   const float xExtension = 50;
 
   cv::Point2f center = cv::Point2f(ref.x, ref.y), aux;
   cv::circle(drawnImg, center, 3, cv::Scalar(0, 255, 0), -1);
+  cv::circle(drawnImg, cp.c_teamColor, 3, cv::Scalar(255, 255, 255), -1);
+  cv::circle(drawnImg, cp.c_color, 3, cv::Scalar(255, 255, 255), -1);
 
   aux.x = center.x + (xExtension * cos(ori * PI / 180));
   aux.y = center.y + (xExtension * sin(ori * PI / 180));

@@ -44,7 +44,7 @@ class Vision{
     c_pair getCentroidPair(std::vector<cv::Point2f> c_color, std::vector<cv::Point2f> c_target);
     void updateValues(Shape &f, c_pair cp);
     bool centroidIsEmpty(c_pair cp);
-    void draw(Point ref, float ori);
+    void draw(Point ref, c_pair cp, float ori);
 
     std::vector<Shape> allies;
     std::vector<Shape> enemies;
