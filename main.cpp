@@ -32,7 +32,6 @@ int main(int argc, char** argv){
   cv::Mat image;
   cv::VideoCapture cap;
   std::string teamColor;
-  float circleMinArea = 0.03, circleMaxArea = 0.08, maxHyp = 40;
   bool stat;
 
   // Serial Transmitt
@@ -77,10 +76,9 @@ int main(int argc, char** argv){
     vision.update();
 
     // Strategy
-
+    
 
     // Pathplanning
-
 
 
     // Control

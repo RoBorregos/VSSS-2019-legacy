@@ -34,6 +34,7 @@ class Vision{
     void update();
 
   private:
+    void setLimit(std::string name);
     void setHSV(hsv &hsvColor, std::string color);
     void updateMask(hsv hsvColor);
     std::vector<std::vector<cv::Point> > getContours(hsv color);
@@ -49,7 +50,7 @@ class Vision{
     Shape ball;
 
     cv::Mat *original, masked;
-    float width, height, circleMinArea, circleMaxArea, maxHyp;
+    float width, height, minArea, maxArea, maxDistance;
     std::string teamColor;
     hsv orange, blue, yellow, red, green, pink;
     std::vector<cv::Vec4i> hierarchy;

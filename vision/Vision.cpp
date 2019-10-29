@@ -19,9 +19,33 @@ Vision::Vision(cv::Mat &image, std::string teamColor, std::vector<Shape> &allies
   this -> ball = ball;
 }
 
+void Vision::setLimit(std::string name){
+  // Reads the file
+  std::ifstream file("calibration/limits.txt");
+  if(file.fail()){
+    std::cout << "File could not be opened\n";
+    return;  
+  }
+
+  std::string aux;
+  float value;
+
+  while(file >> aux >> value){
+    if(aux == "minArea")
+      minArea = value;
+    else if(aux == "maxArea")
+      maxArea = value;
+    else if(aux == "maxDistance")
+      maxDistance = value;
+    else
+      std::cout << "Limit was not found in the file" << std::endl;
+  }
+
+}
+
 void Vision::setHSV(hsv &hsvColor, std::string color){
   // Reads the file
-  std::ifstream file("calibration/Values.txt");
+  std::ifstream file("calibration/colors.txt");
   if(file.fail()){
     std::cout << "File could not be opened\n";
     return;  
@@ -30,7 +54,7 @@ void Vision::setHSV(hsv &hsvColor, std::string color){
   int hMin, hMax, sMin, sMax, vMin, vMax;
   std::string c;
   
-  // Reads each line in values.txt and stops when c == color
+  // Reads each line in colors.txt and stops when c == color
   while(file >> c >> hMin >> hMax >> sMin >> sMax >> vMin >> vMax && c != color);
 
   // Consoles out if the target color was not found
@@ -71,7 +95,7 @@ std::vector<std::vector<cv::Point> > Vision::getContours(hsv color){
 void Vision::fixContours(std::vector<std::vector<cv::Point> > &contours){
   for(size_t i = 0; i< contours.size(); i++){
     float area = cv::contourArea(contours[i])/(width * height) * 100; // image area's percentage
-    if(area < circleMinArea || area > circleMaxArea)
+    if(area < minArea || area > maxArea)
       contours.erase(contours.begin() + int(i--));
   }
 }
@@ -110,7 +134,7 @@ std::vector<cv::Point2f> Vision::getCentroids(hsv color){
 }
 
 c_pair Vision::getCentroidPair(std::vector<cv::Point2f> c_color, std::vector<cv::Point2f> c_target){
-  double minHyp = INT_MAX;
+  double minDistance = INT_MAX;
 
   if(c_color.size() < 1 || c_target.size() < 1)
     return c_pair();
@@ -118,18 +142,18 @@ c_pair Vision::getCentroidPair(std::vector<cv::Point2f> c_color, std::vector<cv:
   
   for(int i = 0; i < c_color.size(); i++){
     for(int j = 0; j < c_target.size(); j++){
-      double hyp = sqrt(pow(c_color[i].y - c_target[j].y, 2) + pow(c_color[i].x - c_target[j].x, 2));
-      if(hyp < minHyp && hyp < maxHyp){
-        minHyp = hyp;
+      double distance = sqrt(pow(c_color[i].y - c_target[j].y, 2) + pow(c_color[i].x - c_target[j].x, 2));
+      if(distance < minDistance && distance < maxDistance){
+        minDistance = distance;
         cp.c_color = c_color[i];
         cp.c_teamColor = c_target[j];
       }
-      // std::cout << "hyp = " << hyp << std::endl;
+      // std::cout << "distance = " << distance << std::endl;
     }
   }
 
-  if(minHyp == INT_MAX)
-    std::cout << "WARNING: Rob could not be found. This could happened because the hyp was to big\n";
+  if(minDistance == INT_MAX)
+    std::cout << "WARNING: Rob could not be found. This could happened because the distance was to big\n";
 
   return cp;
 }
@@ -174,9 +198,9 @@ bool Vision::centroidIsEmpty(c_pair cp){
 }
 
 void Vision::settings(float &cMinArea, float &cMaxArea, float &maxH){
-  circleMinArea = cMinArea;
-  circleMaxArea = cMaxArea;
-  maxHyp = maxH;
+  minArea = cMinArea;
+  maxArea = cMaxArea;
+  maxDistance = maxH;
 }
 
 void Vision::update(){

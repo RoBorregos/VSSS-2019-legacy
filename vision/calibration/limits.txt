@@ -1,0 +1,3 @@
+minArea 255
+maxArea 255
+maxDistance 255
