@@ -19,9 +19,11 @@ bool inputValidation(int &argc, char** &argv, cv::Mat &image, cv::VideoCapture &
 }
 
 int main(int argc, char** argv){
-  std::cout <<"Usage(static video): ./main test.mp4" << std::endl;
-  std::cout <<"Usage(static image): ./main test.png" << std::endl;
-  std::cout <<"Usage(video capture): ./main" << std::endl;
+  if (argc == 1) {
+    std::cout <<"Usage(static video): ./main test.mp4" << std::endl;
+    std::cout <<"Usage(static image): ./main test.png" << std::endl;
+    std::cout <<"Usage(video capture): ./main" << std::endl;
+  }
 
   cv::Mat image;
   cv::VideoCapture cap;

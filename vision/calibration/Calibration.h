@@ -1,17 +1,19 @@
+#ifndef CALIBRATION_H
+#define CALIBRATION_H
+
 #include <opencv2/highgui/highgui.hpp> // image & screen
 #include <opencv2/imgproc.hpp>
 #include <algorithm>
 #include <iostream>
 #include <fstream>
 
-// Scalar constants
-#define ORANGE cv::Scalar(0,165,255)
-#define BLUE cv::Scalar(255,0,0)
-#define YELLOW cv::Scalar(0,255,255)
-#define RED cv::Scalar(0,0,255)
-#define GREEN cv::Scalar(0,255,0)
-#define PINK cv::Scalar(147,20,255)
-#define WHITE cv::Scalar(255,255,255)
+#define ORANGE "Orange"
+#define BLUE "Blue"
+#define YELLOW "Yellow"
+#define RED "Red"
+#define GREEN "Green"
+#define PINK "Pink"
+#define WHITE "White"
 
 class Calibration{
   public:
@@ -26,6 +28,9 @@ class Calibration{
     static std::string screenName;
 
   private:
+    static void useClickValues();
+    static void drawLimits();
+    static void updateTrackbars();
     // Trackbar callbacks
     static void onHueMinTrackBar(int, void*);
     static void onHueMaxTrackBar(int, void*);
@@ -37,7 +42,9 @@ class Calibration{
     // Shows in the screen the current color and when it's been saved
     static void log(); 
     // Rewrites the current color's hsv range in the values.txt file
-    static void saveColor();
+    static bool saveColor();
+    static bool saveLimits();
+
     // Updates the trackbars with the values inside the values.txt file of a specific color
     static void readColor(std::string targetColor);
 
@@ -47,3 +54,5 @@ class Calibration{
     static std::ifstream infile;
     static cv::Scalar scalarColor;
 };
+
+#endif //CALIBRATION_H
