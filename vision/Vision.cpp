@@ -6,6 +6,8 @@ Vision::Vision(cv::Mat &image, std::string teamColor, std::vector<Shape> &allies
   width = (*original).cols;
   height = (*original).rows;
 
+  std::cout << width << " " << height << std::endl;
+
   setLimits();
   setHSV(orange, "Orange");
   setHSV(blue, "Blue");
@@ -99,7 +101,7 @@ std::vector<std::vector<cv::Point> > Vision::getContours(hsv color){
 
 void Vision::fixContours(std::vector<std::vector<cv::Point> > &contours){
   for(size_t i = 0; i< contours.size(); i++){
-    float area = cv::contourArea(contours[i])/(width * height) * 100; // image area's percentage
+    float area = cv::contourArea(contours[i]); // image area's percentage
     if(area < minArea || area > maxArea)
       contours.erase(contours.begin() + int(i--));
   }
