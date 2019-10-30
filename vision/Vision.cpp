@@ -6,6 +6,7 @@ Vision::Vision(cv::Mat &image, std::string teamColor, std::vector<Shape> &allies
   width = (*original).cols;
   height = (*original).rows;
 
+  setLimits();
   setHSV(orange, "Orange");
   setHSV(blue, "Blue");
   setHSV(yellow, "Yellow");
@@ -19,9 +20,9 @@ Vision::Vision(cv::Mat &image, std::string teamColor, std::vector<Shape> &allies
   this -> ball = ball;
 }
 
-void Vision::setLimit(std::string name){
+void Vision::setLimits(){
   // Reads the file
-  std::ifstream file("calibration/limits.txt");
+  std::ifstream file("./vision/calibration/limits.txt");
   if(file.fail()){
     std::cout << "File could not be opened\n";
     return;  
@@ -45,7 +46,7 @@ void Vision::setLimit(std::string name){
 
 void Vision::setHSV(hsv &hsvColor, std::string color){
   // Reads the file
-  std::ifstream file("calibration/colors.txt");
+  std::ifstream file("./vision/calibration/colors.txt");
   if(file.fail()){
     std::cout << "File could not be opened\n";
     return;  
@@ -68,6 +69,8 @@ void Vision::setHSV(hsv &hsvColor, std::string color){
   hsvColor.sMax = sMax;
   hsvColor.vMin = vMin;
   hsvColor.vMax = vMax;
+
+  std::cout << hMin << hMax << sMin << sMax << vMin << vMax << std::endl;
 }
 
 void Vision::updateMask(hsv c){
@@ -180,6 +183,7 @@ void Vision::updateValues(Shape &f, c_pair cp){
       else  
         f.ori = cp.c_color.y > cp.c_teamColor.y ? 360 - angle : angle;
     }
+    f.ori = fabs(360-f.ori);
 
     timeDiff = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - f.lastTime).count();
     f.dx = (f.currentPos.x - lastX) / timeDiff;
@@ -189,18 +193,29 @@ void Vision::updateValues(Shape &f, c_pair cp){
     std::chrono::time_point<std::chrono::system_clock> timeNow = std::chrono::system_clock::now();
     f.lastTime = timeNow;
   }
+
   std::cout << "x: " << f.currentPos.x << "  y: " << f.currentPos.y << "  dx: " << f.dx << "  dy: " << f.dy;
   std::cout << "  ori: " << f.ori << std::endl;
+
+  draw(f.currentPos, cp, f.ori);  
 }
 
 bool Vision::centroidIsEmpty(c_pair cp){
   return cp.c_color.x == 0 && cp.c_color.y == 0 && cp.c_teamColor.x == 0 && cp.c_teamColor.y == 0;
 }
 
-void Vision::settings(float &cMinArea, float &cMaxArea, float &maxH){
-  minArea = cMinArea;
-  maxArea = cMaxArea;
-  maxDistance = maxH;
+void Vision::draw(Point ref, c_pair cp, float ori){
+  const float xExtension = 50;
+
+  cv::Point2f center = cv::Point2f(ref.x, ref.y), aux;
+  cv::circle(drawnImg, center, 3, cv::Scalar(0, 255, 0), -1);
+  cv::circle(drawnImg, cp.c_teamColor, 3, cv::Scalar(255, 255, 255), -1);
+  cv::circle(drawnImg, cp.c_color, 3, cv::Scalar(255, 255, 255), -1);
+
+  aux.x = center.x + (xExtension * cos(ori * PI / 180));
+  aux.y = center.y + (xExtension * sin(ori * PI / 180));
+
+  cv::line(drawnImg, center, aux, cv::Scalar(0, 0, 255), 1);
 }
 
 void Vision::update(){
@@ -213,6 +228,8 @@ void Vision::update(){
   c_pink = getCentroids(pink);
   c_team = teamColor == "blue" ? c_blue : c_yellow;
   // podemos no utilizar c_blue & c_yellow
+
+  drawnImg = (*original).clone();
   std::cout << "Rob1\n";
   updateValues(allies[0], getCentroidPair(c_red, c_team));
   std::cout << "Rob2\n";
@@ -222,4 +239,16 @@ void Vision::update(){
   std::cout << "Ball\n";
   updateValues(ball, getCentroidPair(c_orange, c_orange));
   std::cout << "-------------------------------\n";
+  cv::imshow("image", drawnImg);
 }
+
+// void Vision::show(){
+//   drawnImg = (*original).clone();
+  
+//   draw(allies[0], drawnImg);
+//   draw(allies[1], drawnImg);
+//   draw(allies[2], drawnImg);
+//   draw(ball, drawnImg);
+  
+//   cv::imshow("image", drawnImg);
+// }
