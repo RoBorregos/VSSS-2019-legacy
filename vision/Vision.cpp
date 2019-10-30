@@ -18,6 +18,8 @@ Vision::Vision(cv::Mat &image, std::string teamColor, std::vector<Shape> &allies
   this -> enemies = enemies;
   this -> allies = allies;
   this -> ball = ball;
+  
+  drawSet = false;
 }
 
 void Vision::setLimits(){
@@ -141,6 +143,7 @@ c_pair Vision::getCentroidPair(std::vector<cv::Point2f> c_color, std::vector<cv:
 
   if(c_color.size() < 1 || c_target.size() < 1)
     return c_pair();
+
   c_pair cp(c_color[0], c_target[0]); 
   
   for(int i = 0; i < c_color.size(); i++){
@@ -151,13 +154,14 @@ c_pair Vision::getCentroidPair(std::vector<cv::Point2f> c_color, std::vector<cv:
         cp.c_color = c_color[i];
         cp.c_teamColor = c_target[j];
       }
-      // std::cout << "distance = " << distance << std::endl;
     }
   }
 
-  if(minDistance == INT_MAX)
+  if(minDistance == INT_MAX){
     std::cout << "WARNING: Rob could not be found. This could happened because the distance was to big\n";
-
+    return c_pair();
+  }
+  
   return cp;
 }
 
@@ -215,7 +219,8 @@ void Vision::draw(Point ref, c_pair cp, float ori){
   aux.x = center.x + (xExtension * cos(ori * PI / 180));
   aux.y = center.y + (xExtension * sin(ori * PI / 180));
 
-  cv::line(drawnImg, center, aux, cv::Scalar(0, 0, 255), 1);
+  if(drawSet) 
+    cv::line(drawnImg, center, aux, cv::Scalar(0, 0, 255), 1);
 }
 
 void Vision::update(){
@@ -229,7 +234,7 @@ void Vision::update(){
   c_team = teamColor == "blue" ? c_blue : c_yellow;
   // podemos no utilizar c_blue & c_yellow
 
-  drawnImg = (*original).clone();
+  if(drawSet) drawnImg = (*original).clone();
   std::cout << "Rob1\n";
   updateValues(allies[0], getCentroidPair(c_red, c_team));
   std::cout << "Rob2\n";
@@ -239,16 +244,10 @@ void Vision::update(){
   std::cout << "Ball\n";
   updateValues(ball, getCentroidPair(c_orange, c_orange));
   std::cout << "-------------------------------\n";
-  cv::imshow("image", drawnImg);
+  
+  if(drawSet) cv::imshow("image", drawnImg);
 }
 
-// void Vision::show(){
-//   drawnImg = (*original).clone();
-  
-//   draw(allies[0], drawnImg);
-//   draw(allies[1], drawnImg);
-//   draw(allies[2], drawnImg);
-//   draw(ball, drawnImg);
-  
-//   cv::imshow("image", drawnImg);
-// }
+void Vision::setDraw(bool b){
+  drawSet = b;
+}
