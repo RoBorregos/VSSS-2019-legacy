@@ -52,7 +52,7 @@ int main(int argc, char** argv){
     return -1;
   }
   Vision vision = Vision(image, teamColor, allies, enemies, ball);
-  cv::namedWindow("image", cv::WINDOW_AUTOSIZE );
+  vision.setDraw(true);
 
   // Communication
   // if (!serialTransmitt.Configure("/dev/ttyUSB0")) {
@@ -93,7 +93,6 @@ int main(int argc, char** argv){
 
       serialTransmitt.SendPacket(packet.GetPacket());
     }
-
 
     if(cv::waitKey(30) == 27)
       break;

@@ -31,7 +31,7 @@ class Vision{
   public:
     Vision(cv::Mat &image, std::string teamColor, std::vector<Shape> &allies, std::vector<Shape> &enemies, Shape &ball);
     void update();
-    // void show();
+    void setDraw(bool b);
 
   private:
     void setLimits();
@@ -55,4 +55,5 @@ class Vision{
     std::string teamColor;
     hsv orange, blue, yellow, red, green, pink;
     std::vector<cv::Vec4i> hierarchy;
+    bool drawSet;
 };
