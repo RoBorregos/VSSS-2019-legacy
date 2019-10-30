@@ -9,7 +9,7 @@
 #define FILTER_SAMPLE 2
 #define LIMITS_FILE_NAME "limits.txt"
 #define MIN_MAX_HSV_RANGE 100
-#define MIN_MAX_AREA_RANGE 100
+#define MIN_MAX_AREA_PERCENTAGE_RANGE 0.50
 
 // Static variables declaration
 cv::Scalar Calibration::scalarColor;
@@ -35,6 +35,7 @@ void mouseEvent(int event, int x, int y, int flags, void* param) {
 
   switch (event) {
       case CV_EVENT_LBUTTONDOWN:
+        std::cout << x << "\t" << y << std::endl;
         if (getSquareLimits) {
           if (!squareCorner) {
             squareUpperLeftCorner = std::make_pair(x, y);
@@ -283,15 +284,15 @@ bool Calibration::saveLimits(){
     return false;
   }
   int squareArea = (squareBottomRightCorner.second - squareUpperLeftCorner.second) * 
-   (squareBottomRightCorner.first - squareUpperLeftCorner.first); 
-  int minArea = squareArea - MIN_MAX_AREA_RANGE / 2;
-  int maxArea = squareArea + MIN_MAX_AREA_RANGE / 2;
+   (squareBottomRightCorner.first - squareUpperLeftCorner.first);
+  int minAreaPercentage = squareArea - squareArea * MIN_MAX_AREA_PERCENTAGE_RANGE;
+  int maxAreaPercentage = squareArea + squareArea * MIN_MAX_AREA_PERCENTAGE_RANGE;
   int maxDistance = std::sqrt(
    std::pow(finalDistancePixel.first - initialDistancePixel.first, 2) +
    std::pow(finalDistancePixel.second - initialDistancePixel.second, 2));
 
-  std::string fileData = "minArea " + std::to_string(minArea) + 
-   "\nmaxArea " + std::to_string(maxArea) + 
+  std::string fileData = "minArea " + std::to_string(minAreaPercentage) + 
+   "\nmaxArea " + std::to_string(maxAreaPercentage) + 
    "\nmaxDistance " + std::to_string(maxDistance);
 
   // Rewrites the entire file
