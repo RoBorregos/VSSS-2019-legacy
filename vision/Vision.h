@@ -34,6 +34,7 @@ class Vision{
     void setDraw(bool b);
 
   private:
+    void setCrossPoints();
     void setLimits();
     void setHSV(hsv &hsvColor, std::string color);
     void updateMask(hsv hsvColor);
@@ -45,13 +46,15 @@ class Vision{
     void updateValues(Shape &f, c_pair cp);
     bool centroidIsEmpty(c_pair cp);
     void draw(Point ref, c_pair cp, float ori);
+    Point getRealPos(float x, float y);
 
+    std::vector<Point> crossPoints;
     std::vector<Shape> allies;
     std::vector<Shape> enemies;
     Shape ball;
 
     cv::Mat *original, masked, drawnImg;
-    float width, height, minArea, maxArea, maxDistance;
+    float width, height, minArea, maxArea, maxDistance, scale;
     std::string teamColor;
     hsv orange, blue, yellow, red, green, pink;
     std::vector<cv::Vec4i> hierarchy;

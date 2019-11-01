@@ -6,8 +6,7 @@ Vision::Vision(cv::Mat &image, std::string teamColor, std::vector<Shape> &allies
   width = (*original).cols;
   height = (*original).rows;
 
-  std::cout << width << " " << height << std::endl;
-
+  // setCrossPoints();
   setLimits();
   setHSV(orange, "Orange");
   setHSV(blue, "Blue");
@@ -20,8 +19,27 @@ Vision::Vision(cv::Mat &image, std::string teamColor, std::vector<Shape> &allies
   this -> enemies = enemies;
   this -> allies = allies;
   this -> ball = ball;
-  
+
   drawSet = false;
+}
+
+void Vision::setCrossPoints(){
+  // Reads the file
+  std::ifstream file("./vision/calibration/crosspoints.txt");
+  if(file.fail()){
+    std::cout << "File could not be opened\n";
+    return;  
+  }
+
+  float x, y;
+  int i;
+
+  file >> scale;
+
+  while(file >> x >> y){
+    crossPoints[i].x = x;
+    crossPoints[i++].y = y;
+  }
 }
 
 void Vision::setLimits(){
@@ -91,17 +109,15 @@ std::vector<std::vector<cv::Point> > Vision::getContours(hsv color){
   std::vector<std::vector<cv::Point> > contours;
   
   updateMask(color);
-
   cv::findContours(masked, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE, cv::Point(0,0));
   fixContours(contours);
 
-  // std::cout << "contours size = " << contours.size() << std::endl;
   return contours;
 }
 
 void Vision::fixContours(std::vector<std::vector<cv::Point> > &contours){
   for(size_t i = 0; i< contours.size(); i++){
-    float area = cv::contourArea(contours[i]); // image area's percentage
+    float area = cv::contourArea(contours[i]);
     if(area < minArea || area > maxArea)
       contours.erase(contours.begin() + int(i--));
   }
@@ -181,6 +197,7 @@ void Vision::updateValues(Shape &f, c_pair cp){
     
     f.currentPos.x = xlen/2 + cp.c_teamColor.x;
     f.currentPos.y = ylen/2 + cp.c_teamColor.y;
+    // f.currentPos = getRealPos(xlen/2 + cp.c_teamColor.x, ylen/2 + cp.c_teamColor.y);
     
     if(&f != &ball){
       angle = (atan(fabs(ylen) / fabs(xlen)) * 180 / PI);
@@ -223,6 +240,13 @@ void Vision::draw(Point ref, c_pair cp, float ori){
 
   if(drawSet) 
     cv::line(drawnImg, center, aux, cv::Scalar(0, 0, 255), 1);
+}
+
+Point Vision::getRealPos(float x, float y){
+  x = (x - crossPoints[0].x) * scale;
+  y = (y - crossPoints[0].y) * scale;
+  
+  return Point(x, y);
 }
 
 void Vision::update(){
