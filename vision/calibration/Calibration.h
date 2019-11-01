@@ -31,6 +31,7 @@ class Calibration{
     static void useClickValues();
     static void drawLimits();
     static void updateTrackbars();
+    static void clearThresholds();
     // Trackbar callbacks
     static void onHueMinTrackBar(int, void*);
     static void onHueMaxTrackBar(int, void*);
@@ -44,6 +45,7 @@ class Calibration{
     // Rewrites the current color's hsv range in the values.txt file
     static bool saveColor();
     static bool saveLimits();
+    static bool saveCrossesPositions();
 
     // Updates the trackbars with the values inside the values.txt file of a specific color
     static void readColor(std::string targetColor);

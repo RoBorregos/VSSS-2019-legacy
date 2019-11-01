@@ -6,10 +6,24 @@
 
 #define ENTER 13
 #define COLORS_FILE_NAME "colors.txt"
-#define FILTER_SAMPLE 2
+#define FILTER_SAMPLE 5
 #define LIMITS_FILE_NAME "limits.txt"
+#define CROSSES_FILE_NAME "crosses.txt"
 #define MIN_MAX_HSV_RANGE 100
 #define MIN_MAX_AREA_PERCENTAGE_RANGE 0.50
+
+#define SET_ORANGE 'o'
+#define SET_BLUE 'b'
+#define SET_YELLOW 'y'
+#define SET_RED 'r'
+#define SET_GREEN 'g'
+#define SET_PINK 'p'
+#define SET_SQUARE 's'
+#define SET_CROSSES 'c'
+#define SET_DISTANCE 'd'
+#define CLEAR_COLOR_CACHE_VALUES 'x'
+#define SET_TRACKBARS 't'
+#define USE_RULE 'q'
 
 // Static variables declaration
 cv::Scalar Calibration::scalarColor;
@@ -21,38 +35,61 @@ int Calibration::hueMin, Calibration::hueMax, Calibration::satMin, Calibration::
     Calibration::valMin, Calibration::valMax;
 
 std::vector<cv::Vec3b> pixels;
-bool getSquareLimits = false;
-bool getDistanceLimits = false;
-bool squareCorner = false;
-bool getInitialDistancePixel = true;
+
+enum Option {
+  kColor = 1,
+  kSquare,
+  kDistance,
+  kCrosses,
+  kRule
+} option;
+
+double pixelsOn1Cm = 0;
 std::pair<int, int> squareUpperLeftCorner(-1, -1);
-std::pair<int, int> squareBottomRightCorner(-1, -1);
+std::pair<int, int> squareBottomRightCorner(0, 0);
 std::pair<int, int> initialDistancePixel(-1, -1);
-std::pair<int, int> finalDistancePixel(-1, -1);
+std::pair<int, int> finalDistancePixel(0, 0);
+std::vector<std::pair<int, int>> crossesPoints; 
+std::pair<int, int> intialRulePoint(-1, -1);
+
+double getDistanceOfTwoPoints(int x1, int y1, int x2, int y2) {
+  return std::sqrt(std::pow(x2 - x1, 2) + std::pow(y2 - y1, 2));
+}
 
 void mouseEvent(int event, int x, int y, int flags, void* param) {
   cv::Mat* image = (cv::Mat*)param;
 
   switch (event) {
       case CV_EVENT_LBUTTONDOWN:
-        std::cout << x << "\t" << y << std::endl;
-        if (getSquareLimits) {
-          if (!squareCorner) {
+        if (option == kRule) {
+          if (intialRulePoint.first == -1) {
+            intialRulePoint = std::make_pair(x, y);
+          } else {
+            double distance = getDistanceOfTwoPoints(intialRulePoint.first, 
+             intialRulePoint.second, x, y) / pixelsOn1Cm;
+            std::cout << "Distance: " << distance << std::endl;
+            intialRulePoint = std::make_pair(-1, -1);
+          }
+        } else if (option == kSquare) {
+          if (squareBottomRightCorner.first != -1) {
             squareUpperLeftCorner = std::make_pair(x, y);
             squareBottomRightCorner = std::make_pair(-1, -1);
           } else {
             squareBottomRightCorner = std::make_pair(x, y);
           }
-          squareCorner = !squareCorner;
-        } else if (getDistanceLimits) {
-          if (getInitialDistancePixel) {
+        } else if (option == kDistance) {
+          if (finalDistancePixel.first != -1) {
             initialDistancePixel = std::make_pair(x, y);
             finalDistancePixel = std::make_pair(-1, -1);
           } else {
             finalDistancePixel = std::make_pair(x, y);
           }
-          getInitialDistancePixel = !getInitialDistancePixel;
-        } else {
+        } else if (option == kCrosses) {
+          crossesPoints.push_back(std::make_pair(x, y));
+          while (crossesPoints.size() > 6) {
+            crossesPoints.erase(crossesPoints.begin());
+          }
+        } else if (option == kColor) {
           pixels.push_back(image->at<cv::Vec3b>(y,x));
         }
         break;
@@ -87,6 +124,15 @@ Calibration::Calibration(std::string screenName, cv::Mat &image){
 
   // Displays the original image with the sliders, once
   update();
+}
+
+void Calibration::clearThresholds() {
+  hueMin = 0;
+  hueMax = 255;
+  satMin = 0;
+  satMax = 255;
+  valMin = 0;
+  valMax = 255;
 }
 
 void Calibration::updateTrackbars() {
@@ -150,51 +196,73 @@ bool Calibration::listenKey(){
   char key = (char) cv::waitKey(30);
 
   switch(key){
-    case 'o':
+    case SET_ORANGE:
+      option = kColor;
       currentColor = ORANGE;
       readColor(currentColor);
       break;
-    case 'b':
+    case SET_BLUE:
+      option = kColor;
       currentColor = BLUE;
       readColor(currentColor);
       break;
-    case 'y':
+    case SET_YELLOW:
+      option = kColor;
       currentColor = YELLOW;
       readColor(currentColor);
       break;
-    case 'r':
+    case SET_RED:
+      option = kColor;
       currentColor = RED;
       readColor(currentColor);
       break;
-    case 'g':
+    case SET_GREEN:
+      option = kColor;
       currentColor = GREEN;
       readColor(currentColor);
       break;
-    case 'p':
+    case SET_PINK:
+      option = kColor;
       currentColor = PINK;
       readColor(currentColor);
       break;
-    case 's':
-      getSquareLimits = !getSquareLimits;
-      if (getDistanceLimits) {
-        getDistanceLimits = false;
-      }
+    case SET_SQUARE:
+      logText = "Square";
+      option = kSquare;
       break;
-    case 'd':
-      getDistanceLimits = !getDistanceLimits;
-      if (getSquareLimits) {
-        getSquareLimits = false;
-      }
+    case SET_CROSSES:
+      logText = "Crosses";
+      option = kCrosses;
       break;
-    case 'x':
+    case SET_DISTANCE:
+      logText = "Distance";
+      option = kDistance;
+      break;
+    case CLEAR_COLOR_CACHE_VALUES:
       pixels.clear();
-      break;
-    case 'l':
+      clearThresholds();
       updateTrackbars();
       break;
+    case SET_TRACKBARS:
+      updateTrackbars();
+      break;
+    case USE_RULE:
+      logText = "Rule";
+      option == kRule;
+      break;
     case ENTER:
-      if (getSquareLimits || getDistanceLimits) {
-        saveLimits();
+      if (option == kSquare || option == kDistance) {
+        if (saveLimits()) {
+          logText = "Limits Saved";
+        } else {
+          logText = "Error, remember to set square and distance";
+        }
+      } else if (option == kCrosses) {
+        if (saveCrossesPositions()) {
+          logText = "Crosses Saved";
+        } else {
+          logText = "Error, click on every cross";
+        }
       } else if (currentColor != WHITE) {
         if (saveColor()) {
           logText = "Color saved!";
@@ -230,8 +298,7 @@ void Calibration::readColor(std::string targetColor) {
     return;  
   }
 
-  // Updates current color & cleans logtext
-  logText = "";
+  logText = targetColor;
 
   std::string color;
   int minHue, maxHue, minSat, maxSat, minVal, maxVal;
@@ -287,16 +354,42 @@ bool Calibration::saveLimits(){
    (squareBottomRightCorner.first - squareUpperLeftCorner.first);
   int minAreaPercentage = squareArea - squareArea * MIN_MAX_AREA_PERCENTAGE_RANGE;
   int maxAreaPercentage = squareArea + squareArea * MIN_MAX_AREA_PERCENTAGE_RANGE;
-  int maxDistance = std::sqrt(
-   std::pow(finalDistancePixel.first - initialDistancePixel.first, 2) +
-   std::pow(finalDistancePixel.second - initialDistancePixel.second, 2));
+  int maxDistance = getDistanceOfTwoPoints(initialDistancePixel.first,
+   initialDistancePixel.second, finalDistancePixel.first, finalDistancePixel.second);
 
   std::string fileData = "minArea " + std::to_string(minAreaPercentage) + 
    "\nmaxArea " + std::to_string(maxAreaPercentage) + 
    "\nmaxDistance " + std::to_string(maxDistance);
 
-  // Rewrites the entire file
   std::ofstream outFile(LIMITS_FILE_NAME);
+  outFile << fileData;
+  outFile.close();
+}
+
+bool Calibration::saveCrossesPositions(){
+  if (crossesPoints.size() < 6) {
+    return false;
+  }
+  std::string fileData = "";
+  double avgVerticalPixelsIn40Cm = ((crossesPoints[4].second - crossesPoints[2].second) +
+   (crossesPoints[2].second - crossesPoints[0].second) +
+   (crossesPoints[5].second - crossesPoints[3].second) +
+   (crossesPoints[3].second - crossesPoints[1].second)) / 4.0;
+  double avgHorizontalPixelsIn75Cm = ((crossesPoints[5].first - crossesPoints[4].first) +
+   (crossesPoints[3].first - crossesPoints[2].first) +
+   (crossesPoints[1].first - crossesPoints[0].first)) / 3.0;
+  pixelsOn1Cm = ((avgVerticalPixelsIn40Cm / 40.0) +
+   (avgHorizontalPixelsIn75Cm / 75.0)) / 2.0;
+  fileData += "pixels/cm " + std::to_string(pixelsOn1Cm);
+  int cross = 1;
+  for (auto crossPoint : crossesPoints) {
+    fileData += "cross" + std::to_string(cross) + " " + 
+     std::to_string(crossPoint.first) + " " + std::to_string(crossPoint.second) + "\n";
+     cross++;
+  }
+
+  // Rewrites the entire file
+  std::ofstream outFile(CROSSES_FILE_NAME);
   outFile << fileData;
   outFile.close();
 }
@@ -351,7 +444,7 @@ void Calibration::update(){
   (*original).copyTo(result, mask);
   // Adds feedback to the window
   log();
-  if (getSquareLimits || getDistanceLimits) {
+  if (option == kDistance || option == kSquare) {
     drawLimits();
   }
   // Displays the resulting image
