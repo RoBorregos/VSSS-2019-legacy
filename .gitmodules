@@ -1,0 +1,12 @@
+[submodule "Simulator/VSS-Core"]
+	path = Simulator/VSS-Core
+	url = https://github.com/VSS-SDK/VSS-Core.git
+[submodule "Simulator/VSS-Simulator"]
+	path = Simulator/VSS-Simulator
+	url = https://github.com/VSS-SDK/VSS-Simulator.git
+[submodule "Simulator/VSS-Viewer"]
+	path = Simulator/VSS-Viewer
+	url = https://github.com/VSS-SDK/VSS-Viewer.git
+[submodule "Simulator/VSS-SampleCpp"]
+	path = Simulator/VSS-SampleCpp
+	url = https://github.com/VSS-SDK/VSS-SampleCpp.git
