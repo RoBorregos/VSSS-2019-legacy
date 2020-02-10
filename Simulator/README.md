@@ -9,10 +9,10 @@ For more information check the [VSS-SDK](https://vss-sdk.github.io/book/general.
 Just run the following commands from this directory and everything will be ready to go.
 
 ```
-$ sudo .VSS-Core/configure.sh
-$ sudo .VSS-Simulator/configure.sh
-$ sudo .VSS-Viewer/configure.sh
-$ sudo .VSS-Sample-Cpp/configure.sh
+$ sudo ./VSS-Core/configure.sh
+$ sudo ./VSS-Simulator/configure.sh
+$ sudo ./VSS-Viewer/configure.sh
+$ sudo ./VSS-Sample-Cpp/configure.sh
 ```
 
 ## Usage
