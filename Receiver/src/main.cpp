@@ -16,6 +16,7 @@
 
 #include <Arduino.h>
 #include "RCSwitch.h"
+#include "Robot.h"
 
     RCSwitch mySwitch = RCSwitch();
 

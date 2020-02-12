@@ -1,20 +1,37 @@
-/* RoBorregos
- * Tecnológico de Monterrey
- * Monterrey, Nuevo León, México
- * 
- * RoBorregos Foxtrot, competing on:
- * LARC - Latin American and Brazilian Robotics Competition
- * VSSS - Very Small Size Soccer
- * 
- * 
- * INFORMATION
- * Information.h
- * 
- * Last update: September 21, 2019
- *              Ernesto Cervantes
- */
+//  RoBorregos
+//  Tecnológico de Monterrey
+//  Monterrey, Nuevo León, México
+//  
+//  RoBorregos Foxtrot, competing on:
+//  LARC - Latin American and Brazilian Robotics Competition
+//  VSSS - Very Small Size Soccer
+//  
+//  
+//  INFORMATION
+//  Information.cpp
+//  
+//  Last update: September 21, 2019
+//               Ernesto Cervantes
 
 #include "Information.h"
+
+void Information::setRobotId(uint32_t &data, uint8_t id)
+{
+    id &= 0x07;
+    uint32_t id32 = id;
+    clearRobotId(data);
+    data |= (id32 << 21);
+}
+
+void Information::clearRobotId(uint32_t &data)
+{
+    data &= 0xFF1FFFFF;
+}
+
+uint8_t Information::getRobotId(uint32_t data)
+{
+    return (data | 0x00E00000) >> 21;
+}
 
 void Information::setStop(uint32_t &data)
 {
@@ -78,12 +95,12 @@ bool Information::isRightForward(uint32_t data)
     return data & 0x00010000;
 }
 
-uint8_t Information::speedLeft(uint32_t data)
+uint8_t Information::getSpeedLeft(uint32_t data)
 {
     return (uint8_t) ((data & 0x0000FF00) >> 8);
 }
 
-uint8_t Information::speedRight(uint32_t data)
+uint8_t Information::getSpeedRight(uint32_t data)
 {
     return (uint8_t) (data & 0x000000FF);
 }

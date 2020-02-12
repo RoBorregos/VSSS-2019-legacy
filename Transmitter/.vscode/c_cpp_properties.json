@@ -7,9 +7,11 @@
             "name": "Win32",
             "includePath": [
                 "c:/Users/netoc/Desktop/VSSS_2019/Transmitter/src",
+                "c:/Users/netoc/Desktop/VSSS_2019/libraries/information",
                 "c:/Users/netoc/Desktop/VSSS_2019/libraries/rc-switch-master",
                 "C:/Users/netoc/.platformio/packages/framework-arduinoavr/cores/arduino",
                 "C:/Users/netoc/.platformio/packages/framework-arduinoavr/variants/eightanaloginputs",
+                "c:/Users/netoc/Desktop/VSSS_2019/libraries/figure",
                 "C:/Users/netoc/.platformio/lib/PinChangeInterruptHandler_ID1499",
                 "C:/Users/netoc/.platformio/lib/RFReceiver_ID1500",
                 "C:/Users/netoc/.platformio/lib/RFTransmitter_ID1501",
@@ -25,9 +27,11 @@
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
                     "c:/Users/netoc/Desktop/VSSS_2019/Transmitter/src",
+                    "c:/Users/netoc/Desktop/VSSS_2019/libraries/information",
                     "c:/Users/netoc/Desktop/VSSS_2019/libraries/rc-switch-master",
                     "C:/Users/netoc/.platformio/packages/framework-arduinoavr/cores/arduino",
                     "C:/Users/netoc/.platformio/packages/framework-arduinoavr/variants/eightanaloginputs",
+                    "c:/Users/netoc/Desktop/VSSS_2019/libraries/figure",
                     "C:/Users/netoc/.platformio/lib/PinChangeInterruptHandler_ID1499",
                     "C:/Users/netoc/.platformio/lib/RFReceiver_ID1500",
                     "C:/Users/netoc/.platformio/lib/RFTransmitter_ID1501",
