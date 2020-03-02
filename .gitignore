@@ -4,6 +4,7 @@
 .vscode/launch.json
 .vscode/ipch
 .history/*
+Simulator/build/*
 
 # Prerequisites
 *.d
