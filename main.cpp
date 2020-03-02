@@ -1,6 +1,7 @@
 #include "libraries/packet/packet.h"
 #include "libraries/serial_transmitt/serial_transmitt.h"
 #include "vision/Vision.h"
+#include "libraries/Control/Control.h"
 
 // Validates media input
 bool inputValidation(int &argc, char** &argv, cv::Mat &image, cv::VideoCapture &cap){
@@ -36,6 +37,7 @@ int main(int argc, char** argv){
   SerialTransmitt serialTransmitt;
   Packet packet;
 
+  
   // ---------------------- SETUP --------------------------
   // General 
   std::cout << std::fixed;
@@ -53,6 +55,9 @@ int main(int argc, char** argv){
   }
   Vision vision = Vision(image, teamColor, allies, enemies, ball);
   vision.setDraw(true);
+  // Control
+  Control control(allies);
+  vector<std::pair<double,double>> velocities;  //right, left
 
   // Communication
   // if (!serialTransmitt.Configure("/dev/ttyUSB0")) {
@@ -82,16 +87,21 @@ int main(int argc, char** argv){
 
       // Pathplanning
 
+      
+      // Control. To this point needs an updated robot current and final position.
+      double r=0,l=0;
 
-      // Control
+      for(int i=0; i<3; i++){
+        control.move(i,r,l); //returns right and left velocity to go to the robot current position to the final position (closest angle). Never stops. 
+        // Communication 
+        packet.setId(i);
+        packet.RightMotor(fabs(r), r>0, 0);
+        packet.LeftMotor(fabs(l), l>0, 0);
 
+        serialTransmitt.SendPacket(packet.GetPacket());
 
-      // Communication
-      packet.RightMotor(100, 1); // demo
-      packet.LeftMotor(150, 0, 0); // demo
-      packet.SetId(GOALIE); // demo
+      }
 
-      serialTransmitt.SendPacket(packet.GetPacket());
     }
 
     if(cv::waitKey(30) == 27)
