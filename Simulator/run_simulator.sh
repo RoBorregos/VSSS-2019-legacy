@@ -10,7 +10,6 @@ cleanUp() {
 }
 
 # Always re build the VSS-SampleCpp/src/main.cpp file
-cd VSS-SampleCpp
 rm -R build
 mkdir -p build
 cd build
@@ -20,14 +19,12 @@ make
 if [[ $? -ne 0 ]] ; then
     exit 1
 fi
-cd ../..
-
-
+cd ..
 
 # Run simulator and save the PID's to kill them after
 ./VSS-Viewer/build/vss-viewer --yellow_debug_port=5558 --state_port=5555 &
 VIEWER_PID=$!
-./VSS-SampleCpp/build/vss-sample &
+./build/vss-sample &
 SAMPLE_PID=$!
 ./VSS-Simulator/build/vss-simulator &
 SIMULATOR_PID=$!
