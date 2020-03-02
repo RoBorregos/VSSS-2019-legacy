@@ -7,6 +7,3 @@
 [submodule "Simulator/VSS-Viewer"]
 	path = Simulator/VSS-Viewer
 	url = https://github.com/VSS-SDK/VSS-Viewer.git
-[submodule "Simulator/VSS-SampleCpp"]
-	path = Simulator/VSS-SampleCpp
-	url = https://github.com/VSS-SDK/VSS-SampleCpp.git
