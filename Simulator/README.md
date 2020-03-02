@@ -8,11 +8,11 @@ For more information check the
 
 ## Installation
 
-Just run the following command from each VSS directory and everything is ready
-to go.
+Just run the configuration bash script with the next command and make sure
+there's no error
 
 ```
-$ sudo ./configure.sh
+$ sudo ./configure_simulator.sh 
 ```
 
 ## Usage
