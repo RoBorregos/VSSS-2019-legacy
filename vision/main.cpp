@@ -1,6 +1,7 @@
 #include <opencv2/imgproc.hpp>  // hsv
 #include "Vision.h"
 
+
 // Validates input. True if static media / False if not
 bool inputValidation(int &argc, char** &argv, cv::Mat &image, cv::VideoCapture &cap){
   std::string path;

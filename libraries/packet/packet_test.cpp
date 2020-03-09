@@ -197,52 +197,52 @@ bool CheckPacket() {
     return true;
 }
 
-int main() {
-    if(CheckRightSpeed()) {
-        std::cout << "OK - RightSpeedCheck" << std::endl;
-    } else {
-        std::cout << "FAIL - RightSpeedCheck" << std::endl;
-    }
-    if(CheckLeftSpeed()) {
-        std::cout << "OK - LeftSpeedCheck" << std::endl;
-    } else {
-        std::cout << "FAIL - LeftSpeedCheck" << std::endl;
-    }
-    if(CheckForwardRight()) {
-        std::cout << "OK - ForwardRightCheck" << std::endl;
-    } else {
-        std::cout << "FAIL - ForwardRightCheck" << std::endl;
-    }
-    if(CheckForwardLeft()) {
-        std::cout << "OK - ForwardLeftCheck" << std::endl;
-    } else {
-        std::cout << "FAIL - ForwardLeftCheck" << std::endl;
-    }
-    if(CheckEnableRight()) {
-        std::cout << "OK - EnableRightCheck" << std::endl;
-    } else {
-        std::cout << "FAIL - EnableRightCheck" << std::endl;
-    }
-    if(CheckEnableLeft()) {
-        std::cout << "OK - EnableLeftCheck" << std::endl;
-    } else {
-        std::cout << "FAIL - EnableLeftCheck" << std::endl;
-    }
-    if(CheckStop()) {
-        std::cout << "OK - StopCheck" << std::endl;
-    } else {
-        std::cout << "FAIL - StopCheck" << std::endl;
-    }
-    if (CheckId()) {
-        std::cout << "OK - IdCheck" << std::endl;
-    } else {
-        std::cout << "FAIL - IdCheck" << std::endl;
-    }
-    if (CheckPacket()) {
-        std::cout << "OK - PacketCheck" << std::endl;
-    } else {
-        std::cout << "FAIL - PacketCheck" << std::endl;
-    }
+// int main() {
+//     if(CheckRightSpeed()) {
+//         std::cout << "OK - RightSpeedCheck" << std::endl;
+//     } else {
+//         std::cout << "FAIL - RightSpeedCheck" << std::endl;
+//     }
+//     if(CheckLeftSpeed()) {
+//         std::cout << "OK - LeftSpeedCheck" << std::endl;
+//     } else {
+//         std::cout << "FAIL - LeftSpeedCheck" << std::endl;
+//     }
+//     if(CheckForwardRight()) {
+//         std::cout << "OK - ForwardRightCheck" << std::endl;
+//     } else {
+//         std::cout << "FAIL - ForwardRightCheck" << std::endl;
+//     }
+//     if(CheckForwardLeft()) {
+//         std::cout << "OK - ForwardLeftCheck" << std::endl;
+//     } else {
+//         std::cout << "FAIL - ForwardLeftCheck" << std::endl;
+//     }
+//     if(CheckEnableRight()) {
+//         std::cout << "OK - EnableRightCheck" << std::endl;
+//     } else {
+//         std::cout << "FAIL - EnableRightCheck" << std::endl;
+//     }
+//     if(CheckEnableLeft()) {
+//         std::cout << "OK - EnableLeftCheck" << std::endl;
+//     } else {
+//         std::cout << "FAIL - EnableLeftCheck" << std::endl;
+//     }
+//     if(CheckStop()) {
+//         std::cout << "OK - StopCheck" << std::endl;
+//     } else {
+//         std::cout << "FAIL - StopCheck" << std::endl;
+//     }
+//     if (CheckId()) {
+//         std::cout << "OK - IdCheck" << std::endl;
+//     } else {
+//         std::cout << "FAIL - IdCheck" << std::endl;
+//     }
+//     if (CheckPacket()) {
+//         std::cout << "OK - PacketCheck" << std::endl;
+//     } else {
+//         std::cout << "FAIL - PacketCheck" << std::endl;
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
