@@ -12,6 +12,7 @@
 #include "cstdlib"
 #include <math.h>
 #include <vector>
+#include <chrono>
 
 static const double pi = 3.141592;
 using namespace vss;
@@ -26,7 +27,7 @@ IDebugSender *debugSender2;
 State state;
 State state2;
 
-ddouble wrapMax(double x, double max)
+double wrapMax(double x, double max)
 {
   return fmod(max + fmod(x, max), max);
 }
@@ -100,7 +101,7 @@ struct param
 
 void send_commands(std::vector<std::pair<double, double>>);
 void send_debug();
-std::pair<double, double> calculate(position Cur, position Ref);
+std::pair<double, double> calculate(int id, position Cur, position Ref);
 double map(double val, double fromL, double fromH, double toL, double toH)
 {
   return (val - fromL) * (toH - toL) / (fromH - fromL) + toL;
