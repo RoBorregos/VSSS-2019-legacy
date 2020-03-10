@@ -566,9 +566,9 @@ int main(int argc, char **argv)
     debug2.finalPoses.push_back(Pose(gEnemy.x_dest, gEnemy.y_dest, 0));
     debug2.finalPoses.push_back(Pose(pEnemy.x_dest, pEnemy.y_dest, 0));*/
 
-    moveTo(0, rFriend.x_dest, rFriend.y_dest, velocities, 1);
-    moveTo(1, gFriend.x_dest, gFriend.y_dest, velocities, 1);
-    moveTo(2, pFriend.x_dest, pFriend.y_dest, velocities, 1);
+    moveTo(0, rFriend.x_dest, rFriend.y_dest, velocities);
+    moveTo(1, gFriend.x_dest, gFriend.y_dest, velocities);
+    moveTo(2, pFriend.x_dest, pFriend.y_dest, velocities);
     /*moveTo(0, rEnemy.x_dest, rEnemy.y_dest, velocities2, 0);
     moveTo(1, gEnemy.x_dest, gEnemy.y_dest, velocities2, 0);
     moveTo(2, pEnemy.x_dest, pEnemy.y_dest, velocities2, 0);*/
