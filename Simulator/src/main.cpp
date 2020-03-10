@@ -25,7 +25,6 @@ ICommandSender *commandSender2;
 IDebugSender *debugSender2;
 
 State state;
-State state2;
 
 double wrapMax(double x, double max)
 {
@@ -61,14 +60,26 @@ struct position
     speed = 5;
     Aspeed = 1;
   }
-  position(int id)
+  position(int id, bool fg)
   {
-    x = state.teamYellow[id].x;
-    y = -1.0 * state.teamYellow[id].y;
-    angle = ((int)(360 - state.teamYellow[id].angle) % 360) * pi / 180.0;
-    angle = wrapMinMax(angle, -pi, pi);
-    speed = 0.0113 * sqrt(state.teamYellow[id].speedX * state.teamYellow[id].speedX + state.teamYellow[id].speedY * state.teamYellow[id].speedY);
-    Aspeed = 1;
+    if (fg)
+    {
+      x = state.teamYellow[id].x;
+      y = -1.0 * state.teamYellow[id].y;
+      angle = ((int)(360 - state.teamYellow[id].angle) % 360) * pi / 180.0;
+      angle = wrapMinMax(angle, -pi, pi);
+      speed = 0.0113 * sqrt(state.teamYellow[id].speedX * state.teamYellow[id].speedX + state.teamYellow[id].speedY * state.teamYellow[id].speedY);
+      Aspeed = 1;
+    }
+    else
+    {
+      x = state.teamBlue[id].x;
+      y = -1.0 * state.teamBlue[id].y;
+      angle = ((int)(360 - state.teamBlue[id].angle) % 360) * pi / 180.0;
+      angle = wrapMinMax(angle, -pi, pi);
+      speed = 0.0113 * sqrt(state.teamBlue[id].speedX * state.teamBlue[id].speedX + state.teamBlue[id].speedY * state.teamBlue[id].speedY);
+      Aspeed = 1;
+    }
   }
   void print()
   {
@@ -107,9 +118,9 @@ double map(double val, double fromL, double fromH, double toL, double toH)
   return (val - fromL) * (toH - toL) / (fromH - fromL) + toL;
 }
 
-void moveTo(int id, double x, double y, std::vector<std::pair<double, double>> &velocities)
+void moveTo(int id, double x, double y, std::vector<std::pair<double, double>> &velocities, bool fg)
 {
-  position current(id);
+  position current(id, fg);
   position reference(x, y);
   min = id == 0 ? 2 : 15;
   std::pair<double, double> result = calculate(id, current, reference);
@@ -549,34 +560,34 @@ int main(int argc, char **argv)
 
     state = stateReceiver->receiveState(FieldTransformationType::None);
     velocities = {std::make_pair(0, 0), std::make_pair(0, 0), std::make_pair(0, 0)};
-    //velocities2 = {std::make_pair(0, 0), std::make_pair(0, 0), std::make_pair(0, 0)};
+    velocities2 = {std::make_pair(0, 0), std::make_pair(0, 0), std::make_pair(0, 0)};
     //std::cout << state << std::endl;
 
     calcularDistanciasTotales(pEnemy, gEnemy, pFriend, gFriend);
     act(gFriend, pFriend, rFriend, state, 1);
-    //act(gEnemy, pEnemy, rEnemy, state, 0);
+    act(gEnemy, pEnemy, rEnemy, state, 0);
 
     vss::Debug debug;
-    // vss::Debug debug2;
+    vss::Debug debug2;
     vss::Command command;
-    // vss::Command command2;
-    debug.finalPoses.push_back(Pose(rFriend.x_dest, rFriend.y_dest, 0));
+    vss::Command command2;
+    /*debug.finalPoses.push_back(Pose(rFriend.x_dest, rFriend.y_dest, 0));
     debug.finalPoses.push_back(Pose(gFriend.x_dest, gFriend.y_dest, 0));
-    debug.finalPoses.push_back(Pose(pFriend.x_dest, pFriend.y_dest, 0));
-    /*debug2.finalPoses.push_back(Pose(rEnemy.x_dest, rEnemy.y_dest, 0));
+    debug.finalPoses.push_back(Pose(pFriend.x_dest, pFriend.y_dest, 0));*/
+    debug2.finalPoses.push_back(Pose(rEnemy.x_dest, rEnemy.y_dest, 0));
     debug2.finalPoses.push_back(Pose(gEnemy.x_dest, gEnemy.y_dest, 0));
-    debug2.finalPoses.push_back(Pose(pEnemy.x_dest, pEnemy.y_dest, 0));*/
+    debug2.finalPoses.push_back(Pose(pEnemy.x_dest, pEnemy.y_dest, 0));
 
-    moveTo(0, rFriend.x_dest, rFriend.y_dest, velocities);
-    moveTo(1, gFriend.x_dest, gFriend.y_dest, velocities);
-    moveTo(2, pFriend.x_dest, pFriend.y_dest, velocities);
-    /*moveTo(0, rEnemy.x_dest, rEnemy.y_dest, velocities2, 0);
+    /*moveTo(0, rFriend.x_dest, rFriend.y_dest, velocities, 1);
+    moveTo(1, gFriend.x_dest, gFriend.y_dest, velocities, 1);
+    moveTo(2, pFriend.x_dest, pFriend.y_dest, velocities, 1);*/
+    moveTo(0, rEnemy.x_dest, rEnemy.y_dest, velocities2, 0);
     moveTo(1, gEnemy.x_dest, gEnemy.y_dest, velocities2, 0);
-    moveTo(2, pEnemy.x_dest, pEnemy.y_dest, velocities2, 0);*/
+    moveTo(2, pEnemy.x_dest, pEnemy.y_dest, velocities2, 0);
 
     rEnemy.print();
-    gFriend.print();
-    pFriend.print();
+    gEnemy.print();
+    pEnemy.print();
     //rFriend.print();
     //gFriend.print();
     //pFriend.print();
@@ -586,13 +597,13 @@ int main(int argc, char **argv)
     for (int i = 0; i < 3; i++)
       command.commands.push_back(WheelsCommand(velocities[i].first, velocities[i].second));
 
-    /*for (int i = 0; i < 3; i++)
-      command2.commands.push_back(WheelsCommand(velocities2[i].first, velocities2[i].second));*/
+    for (int i = 0; i < 3; i++)
+      command2.commands.push_back(WheelsCommand(velocities2[i].first, velocities2[i].second));
 
-    commandSender->sendCommand(command);
-    //commandSender2->sendCommand(command2);
-    debugSender->sendDebug(debug);
-    //debugSender2->sendDebug(debug2);
+    //commandSender->sendCommand(command);
+    commandSender2->sendCommand(command2);
+    //debugSender->sendDebug(debug);
+    debugSender2->sendDebug(debug2);
   }
 
   // Checar los dos robots contrincantes, sacar su distancia de ellos hacia la pelota
@@ -713,3 +724,5 @@ ver la forma de como girar y saber que se esta viendo a la pelota
 cosndierar las posiciones de los robots enemigos ??? 
 
 */
+
+// que no ataque cuando se encuentra en las orillas del mapa ??? en el simulaodr no jala, hay que probar la vida real
