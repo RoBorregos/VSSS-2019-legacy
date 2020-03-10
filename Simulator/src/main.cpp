@@ -73,11 +73,17 @@ std::pair<double, double> calculate(std::string team, int id, double x, double y
 {
 
     double REF_X, REF_Y, CUR_X, CUR_Y, REF_ANGLE, CUR_ANGLE, REF_SPEED, REF_ASPEED;
-    std::string t = "team" + team;
+    if(team=="yellow"){
+    CUR_X = state.teamYellow[id].x;
+    CUR_Y = state.teamYellow[id].y;
+    CUR_ANGLE = ((int)(360 - state.teamYellow[id].angle) % 360) * pi / 180.0;
+    }
+    else{
+    CUR_X = state.teamBlue[id].x;
+    CUR_Y = state.teamBlue[id].y;
+    CUR_ANGLE = ((int)(360 - state.teamBlue[id].angle) % 360) * pi / 180.0;
+    }
 
-    CUR_X = state.t[id].x;
-    CUR_Y = state.t[id].y;
-    CUR_ANGLE = ((int)(360 - state.t[id].angle) % 360) * pi / 180.0;
     CUR_ANGLE = wrapMinMax(CUR_ANGLE, -pi, pi);
 
     REF_X = x;
@@ -198,13 +204,13 @@ int main(int argc, char **argv)
         velocitiesYellow = {std::make_pair(0, 0), std::make_pair(0, 0), std::make_pair(0, 0)};
         velocitiesBlue = {std::make_pair(0, 0), std::make_pair(0, 0), std::make_pair(0, 0)};
 
-        moveTo("Yellow", 0, 158, state.ball.y < 46 ? 46 : state.ball.y > 86 ? 86 : state.ball.y, -100, velocitiesYellow);
-        moveTo("Yellow", 0, state.ball.x, state.ball.y, -100, velocitiesYellow);
-        moveTo("Yellow", 0, state.ball.x, state.ball.y, -100, velocitiesYellow);
+        moveTo("yellow", 0, 158, state.ball.y < 46 ? 46 : state.ball.y > 86 ? 86 : state.ball.y, -100, velocitiesYellow);
+        moveTo("yellow", 0, state.ball.x, state.ball.y, -100, velocitiesYellow);
+        moveTo("yellow", 0, state.ball.x, state.ball.y, -100, velocitiesYellow);
 
-        moveTo("Blue", 0, 10, state.ball.y < 46 ? 46 : state.ball.y > 86 ? 86 : state.ball.y, -100, velocitiesBlue);
-        moveTo("Blue", 0, state.ball.x, state.ball.y, -100, velocitiesBlue);
-        moveTo("Blue", 0, state.ball.x, state.ball.y, -100, velocitiesBlue);
+        moveTo("blue", 0, 10, state.ball.y < 46 ? 46 : state.ball.y > 86 ? 86 : state.ball.y, -100, velocitiesBlue);
+        moveTo("blue", 0, state.ball.x, state.ball.y, -100, velocitiesBlue);
+        moveTo("blue", 0, state.ball.x, state.ball.y, -100, velocitiesBlue);
 
         send_commands(velocitiesYellow, velocitiesBlue);
     }
