@@ -10,7 +10,7 @@
 
 #ifndef CONTROL_H
 #define CONTROL_H
-
+/*
 #include "stdint.h"
 #include "Shape.h"
 #include "Point.h"
@@ -41,5 +41,5 @@ class Control{
 
          
 };
-
+*/
 #endif

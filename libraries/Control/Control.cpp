@@ -1,5 +1,5 @@
 #include "Control.h"
-
+/*
 double Control::wrapMinMax(double x, double min, double max){
     return min+wrapMax(x-min,max-min);
 }
@@ -69,3 +69,4 @@ double w = goASpeed+k[1]*goSpeed*e2*+k[2]*goSpeed*sin(e3);
         left = left<0? -min: min;
 
 } 
+*/
