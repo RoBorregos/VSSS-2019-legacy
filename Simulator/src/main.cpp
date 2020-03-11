@@ -559,6 +559,11 @@ struct robot
     std::cout << "T FINAL :  " << finaltime << std::endl;
     return finaltime;
   }
+
+  void calcularAngulo()
+  {
+    double angle = atan2(abs(y-y_dest),abs(x,x_dest);
+  }
 };
 
 void act(robot &first, robot &second, robot &keeper, State &state, bool x)
@@ -627,19 +632,19 @@ int main(int argc, char **argv)
     vss::Debug debug2;
     vss::Command command;
     vss::Command command2;
-    /*debug.finalPoses.push_back(Pose(rFriend.x_dest, rFriend.y_dest, 0));
+    debug.finalPoses.push_back(Pose(rFriend.x_dest, rFriend.y_dest, 0));
     debug.finalPoses.push_back(Pose(gFriend.x_dest, gFriend.y_dest, 0));
-    debug.finalPoses.push_back(Pose(pFriend.x_dest, pFriend.y_dest, 0));*/
-    debug2.finalPoses.push_back(Pose(rEnemy.x_dest, rEnemy.y_dest, 0));
+    debug.finalPoses.push_back(Pose(pFriend.x_dest, pFriend.y_dest, 0));
+    /*debug2.finalPoses.push_back(Pose(rEnemy.x_dest, rEnemy.y_dest, 0));
     debug2.finalPoses.push_back(Pose(gEnemy.x_dest, gEnemy.y_dest, 0));
-    debug2.finalPoses.push_back(Pose(pEnemy.x_dest, pEnemy.y_dest, 0));
+    debug2.finalPoses.push_back(Pose(pEnemy.x_dest, pEnemy.y_dest, 0));*/
 
     moveTo("yellow", 0, rFriend.x_dest, rFriend.y_dest, -1000, velocitiesYellow);
     moveTo("yellow", 1, gFriend.x_dest, gFriend.y_dest, -1000, velocitiesYellow);
     moveTo("yellow", 2, pFriend.x_dest, pFriend.y_dest, -1000, velocitiesYellow);
-    moveTo("blue", 0, rEnemy.x_dest, rEnemy.y_dest, -1000, velocitiesBlue);
+    /*moveTo("blue", 0, rEnemy.x_dest, rEnemy.y_dest, -1000, velocitiesBlue);
     moveTo("blue", 1, gEnemy.x_dest, gEnemy.y_dest, -1000, velocitiesBlue);
-    moveTo("blue", 2, pEnemy.x_dest, pEnemy.y_dest, -1000, velocitiesBlue);
+    moveTo("blue", 2, pEnemy.x_dest, pEnemy.y_dest, -1000, velocitiesBlue);*/
 
     rEnemy.print();
     gEnemy.print();
@@ -652,8 +657,8 @@ int main(int argc, char **argv)
     //send_commands(velocities2);
     send_commands(velocitiesYellow, velocitiesBlue);
 
-    //debugSenderY->sendDebug(debug);
-    debugSenderB->sendDebug(debug2);
+    debugSenderY->sendDebug(debug);
+    //debugSenderB->sendDebug(debug2);
   }
 
   // Checar los dos robots contrincantes, sacar su distancia de ellos hacia la pelota
