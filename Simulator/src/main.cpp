@@ -560,10 +560,10 @@ struct robot
     return finaltime;
   }
 
-  void calcularAngulo()
+  /*void calcularAngulo()
   {
     double angle = atan2(abs(y-y_dest),abs(x,x_dest);
-  }
+  }*/
 };
 
 void act(robot &first, robot &second, robot &keeper, State &state, bool x)
