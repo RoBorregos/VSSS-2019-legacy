@@ -642,8 +642,8 @@ int main(int argc, char **argv)
     moveTo("yellow", 0, rFriend.x_dest, rFriend.y_dest, -1000, velocitiesYellow);
     moveTo("yellow", 1, gFriend.x_dest, gFriend.y_dest, -1000, velocitiesYellow);
     moveTo("yellow", 2, pFriend.x_dest, pFriend.y_dest, -1000, velocitiesYellow);
-    /*moveTo("blue", 0, rEnemy.x_dest, rEnemy.y_dest, -1000, velocitiesBlue);
-    moveTo("blue", 1, gEnemy.x_dest, gEnemy.y_dest, -1000, velocitiesBlue);
+    moveTo("blue", 0, rEnemy.x_dest, rEnemy.y_dest, -1000, velocitiesBlue);
+    /*moveTo("blue", 1, gEnemy.x_dest, gEnemy.y_dest, -1000, velocitiesBlue);
     moveTo("blue", 2, pEnemy.x_dest, pEnemy.y_dest, -1000, velocitiesBlue);*/
 
     rEnemy.print();
