@@ -8,6 +8,10 @@ Calibration::Calibration(std::string screenName, cv::Mat &image){
   currentColor = "White";
   scalarColor = WHITE;
   logText = "";
+  mode = HSV_COLORS;
+
+  isDrawing = false;
+  stopDrawing = true;
 
   // Sets maximum slider values to 255
   hueMax = 255; satMax = 255; valMax = 255;
@@ -43,6 +47,26 @@ Calibration::Calibration(std::string screenName, cv::Mat &image){
 int Calibration::listenKey(){
   char key = (char) cv::waitKey(30);
   switch(key){
+    case '1':
+      mode = HSV_COLORS;
+      stopDrawing = true;
+      logText = "";
+      break;
+    case '2':
+      mode = INITIAL_POINT;
+      stopDrawing = true;
+      logText = "";
+      break;
+    case '3':
+      mode = AREA_LIMITS;
+      stopDrawing = true;
+      logText = "";
+      break;
+    case '4':
+      mode = DISTANCES;
+      stopDrawing = true;
+      logText = "";
+      break;
     case 'o':
       scalarColor = ORANGE;
       readColor("Orange");
@@ -90,7 +114,29 @@ void Calibration::log(){
   // Draws a small square with the current color, white if none
   cv::rectangle(result, cv::Point(x-25,y-25), cv::Point(x-5,y-5), scalarColor, CV_FILLED);
   // Adds logText to the image, shows if the current color has been saved
-  cv::putText(result, logText, cv::Point(x-220,y-5),cv::FONT_HERSHEY_PLAIN, 1.8, scalarColor, 2);
+  if(mode == DISTANCES)
+    cv::putText(result, logText, cv::Point(x-130,y-5),cv::FONT_HERSHEY_PLAIN, 1.2, RED, 1);
+  else
+    cv::putText(result, logText, cv::Point(x-220,y-5),cv::FONT_HERSHEY_PLAIN, 1.8, scalarColor, 2);
+
+  std::string modeText;
+  switch(mode){
+    case HSV_COLORS:
+      modeText = "Set HSV colors";
+      break;
+    case INITIAL_POINT:
+      modeText = "Set initial point";
+      break;
+    case AREA_LIMITS:
+      modeText = "Grab area limits";
+      break;
+    case DISTANCES:
+      modeText = "Get distances";
+      break;
+    default:
+      modeText = "";
+  }
+  cv::putText(result, modeText, cv::Point(5,y-5),cv::FONT_HERSHEY_PLAIN, 1.2, RED, 2);
 }
 
 void Calibration::saveColor(){
@@ -166,6 +212,11 @@ void Calibration::update(){
   cv::dilate(mask, mask, cv::Mat(), cv::Point(-1, -1));
   // Combines the mask with the original image, as result we get only the filtered colors 
   (*original).copyTo(result, mask);
+  
+  // Draw lines from mouseEvents
+  if(!stopDrawing)
+    cv::line(result, initialP, finalP, RED, 1);
+
   // Adds feedback to the window
   log();
   // Displays the resulting image
@@ -178,25 +229,50 @@ void Calibration::onMouse(int event, int x, int y, int, void *userdata){
 }
 
 void Calibration::onMouse(int event, int x, int y){
-  if(event == CV_EVENT_LBUTTONDOWN){
-    cv::Vec3b HSV_color = (hsv_image).at<cv::Vec3b>(cv::Point(x, y));
+  switch(mode){
+    case HSV_COLORS:
+      if(event == CV_EVENT_LBUTTONDOWN){
+        cv::Vec3b HSV_color = (hsv_image).at<cv::Vec3b>(cv::Point(x, y));
 
-    std::cout << "H = " << (int)HSV_color[0] << std::endl;
-    std::cout << "S = " << (int)HSV_color[1] << std::endl;
-    std::cout << "V = " << (int)HSV_color[2] << std::endl;
+        std::cout << "H = " << (int)HSV_color[0] << std::endl;
+        std::cout << "S = " << (int)HSV_color[1] << std::endl;
+        std::cout << "V = " << (int)HSV_color[2] << std::endl;
 
-    hueMin = std::max(HSV_color[0] - epsilon[0], 0);
-    satMin = std::max(HSV_color[1] - epsilon[1], 0);
-    valMin = std::max(HSV_color[2] - epsilon[2], 0);
-    hueMax = std::min(HSV_color[0] + epsilon[0], 255);
-    satMax = std::min(HSV_color[1] + epsilon[1], 255);
-    valMax = std::min(HSV_color[2] + epsilon[2], 255);
+        hueMin = std::max(HSV_color[0] - epsilon[0], 0);
+        satMin = std::max(HSV_color[1] - epsilon[1], 0);
+        valMin = std::max(HSV_color[2] - epsilon[2], 0);
+        hueMax = std::min(HSV_color[0] + epsilon[0], 255);
+        satMax = std::min(HSV_color[1] + epsilon[1], 255);
+        valMax = std::min(HSV_color[2] + epsilon[2], 255);
 
-    cv::setTrackbarPos("Low  H", screenName, hueMin);
-    cv::setTrackbarPos("High H", screenName, hueMax);
-    cv::setTrackbarPos("Low  S", screenName, satMin);
-    cv::setTrackbarPos("High S", screenName, satMax);
-    cv::setTrackbarPos("Low  V", screenName, valMin);
-    cv::setTrackbarPos("High V", screenName, valMax);
+        cv::setTrackbarPos("Low  H", screenName, hueMin);
+        cv::setTrackbarPos("High H", screenName, hueMax);
+        cv::setTrackbarPos("Low  S", screenName, satMin);
+        cv::setTrackbarPos("High S", screenName, satMax);
+        cv::setTrackbarPos("Low  V", screenName, valMin);
+        cv::setTrackbarPos("High V", screenName, valMax);
+      }
+      break;
+    
+    case DISTANCES:
+      switch(event){
+        case CV_EVENT_LBUTTONDOWN:
+          initialP = finalP = cv::Point(x,y);
+          isDrawing = true;
+          stopDrawing = false;
+          break;
+        case CV_EVENT_LBUTTONUP:
+          finalP = cv::Point(x,y);
+          isDrawing = false;
+          char str[10];
+          sprintf(str, "%.2f px", cv::norm(finalP - initialP));
+          logText = str;
+          break;
+        case CV_EVENT_MOUSEMOVE:
+          if(isDrawing) finalP = cv::Point(x,y);
+      }
+      break;
   }
+  
+  
 }

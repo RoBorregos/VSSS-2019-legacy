@@ -13,6 +13,11 @@
 #define PINK cv::Scalar(147,20,255)
 #define WHITE cv::Scalar(255,255,255)
 
+#define HSV_COLORS 1
+#define INITIAL_POINT 2
+#define AREA_LIMITS 3
+#define DISTANCES 4
+
 class Calibration{
   public:
     Calibration(std::string screenName, cv::Mat &image);
@@ -24,15 +29,19 @@ class Calibration{
     void saveColor();
     void readColor(std::string targetColor);
 
-    static void onMouse(int event, int x, int y, int, void *userdata);
-    void onMouse(int event, int x, int y);
-
     int hueMin, hueMax, satMin, satMax, valMin, valMax;
-    int epsilon[3];
+    int epsilon[3], mode;
     cv::Mat hsv_image, mask, *original;
     std::string logText, currentColor;
     std::ifstream infile;
     cv::Scalar scalarColor;
     cv::Mat result;
     std::string screenName;
+
+    // Mouse events
+    static void onMouse(int event, int x, int y, int, void *userdata);
+    void onMouse(int event, int x, int y);
+
+    cv::Point initialP, finalP;
+    bool isDrawing, stopDrawing;
 };

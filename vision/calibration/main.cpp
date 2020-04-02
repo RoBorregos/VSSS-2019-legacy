@@ -23,6 +23,12 @@ int main(int argc, char** argv){
   std::cout <<"Usage(static image): ./main test.png" << std::endl;
   std::cout <<"Usage(video capture): ./main" << std::endl;
 
+  std::cout << "Calibration modes:" << std::endl;
+  std::cout << "1. Set hsv values" << std::endl;
+  std::cout << "2. Set initial point (0,0)" << std::endl;
+  std::cout << "3. Set robot area limits" << std::endl;
+  std::cout << "4. Read real distances" << std::endl;
+
   cv::Mat image;
   cv::VideoCapture cap;
   bool isStatic = inputValidation(argc, argv, image, cap);
