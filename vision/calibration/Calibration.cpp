@@ -14,8 +14,16 @@ Calibration::Calibration(std::string screenName, cv::Mat &image){
   // Sets minimum slider values to 0
   hueMin = 0; satMin = 0; valMin = 0;
 
+  // Sets epsilson values
+  epsilon[0] = 5;   // H
+  epsilon[1] = 90;  // S
+  epsilon[2] = 100; // V
+
   // Creates a window display for current image
   cv::namedWindow(screenName, cv::WINDOW_AUTOSIZE);
+
+  // Creates callback for screenName
+  cv::setMouseCallback(screenName, onMouse, this);
 
   // Stores a hsv copy of the original image as 'hsv_image'
   cv::cvtColor(image, hsv_image, cv::COLOR_BGR2HSV);
@@ -162,4 +170,33 @@ void Calibration::update(){
   log();
   // Displays the resulting image
   cv::imshow(screenName, result);
+}
+
+void Calibration::onMouse(int event, int x, int y, int, void *userdata){
+  Calibration *calibration = reinterpret_cast<Calibration *>(userdata);
+  calibration->onMouse(event, x, y);
+}
+
+void Calibration::onMouse(int event, int x, int y){
+  if(event == CV_EVENT_LBUTTONDOWN){
+    cv::Vec3b HSV_color = (hsv_image).at<cv::Vec3b>(cv::Point(x, y));
+
+    std::cout << "H = " << (int)HSV_color[0] << std::endl;
+    std::cout << "S = " << (int)HSV_color[1] << std::endl;
+    std::cout << "V = " << (int)HSV_color[2] << std::endl;
+
+    hueMin = std::max(HSV_color[0] - epsilon[0], 0);
+    satMin = std::max(HSV_color[1] - epsilon[1], 0);
+    valMin = std::max(HSV_color[2] - epsilon[2], 0);
+    hueMax = std::min(HSV_color[0] + epsilon[0], 255);
+    satMax = std::min(HSV_color[1] + epsilon[1], 255);
+    valMax = std::min(HSV_color[2] + epsilon[2], 255);
+
+    cv::setTrackbarPos("Low  H", screenName, hueMin);
+    cv::setTrackbarPos("High H", screenName, hueMax);
+    cv::setTrackbarPos("Low  S", screenName, satMin);
+    cv::setTrackbarPos("High S", screenName, satMax);
+    cv::setTrackbarPos("Low  V", screenName, valMin);
+    cv::setTrackbarPos("High V", screenName, valMax);
+  }
 }

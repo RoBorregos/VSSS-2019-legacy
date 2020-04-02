@@ -24,7 +24,11 @@ class Calibration{
     void saveColor();
     void readColor(std::string targetColor);
 
+    static void onMouse(int event, int x, int y, int, void *userdata);
+    void onMouse(int event, int x, int y);
+
     int hueMin, hueMax, satMin, satMax, valMin, valMax;
+    int epsilon[3];
     cv::Mat hsv_image, mask, *original;
     std::string logText, currentColor;
     std::ifstream infile;
