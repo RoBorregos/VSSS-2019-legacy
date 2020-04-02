@@ -1,3 +1,0 @@
-minArea 100
-maxArea 650
-maxDistance 20

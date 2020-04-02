@@ -1,7 +1,0 @@
-pixels/cm 5.175972
-cross1 473 146
-cross2 859 149
-cross3 477 354
-cross4 863 350
-cross5 474 565
-cross6 864 560

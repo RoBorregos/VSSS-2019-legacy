@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -std=c++11
 SRCS = main.cpp Calibration.cpp
-PROG = main.out
+PROG = main
 
 OPENCV = `pkg-config opencv --cflags --libs`
 LIBS = $(OPENCV)
