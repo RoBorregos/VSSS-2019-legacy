@@ -14,9 +14,10 @@
 #define WHITE cv::Scalar(255,255,255)
 
 #define HSV_COLORS 1
-#define INITIAL_POINT 2
-#define AREA_LIMITS 3
-#define DISTANCES 4
+#define SET_CORNERS 2
+#define DISTANCES 3
+
+#define NUM_OF_CORNERS 4
 
 class Calibration{
   public:
@@ -28,9 +29,12 @@ class Calibration{
     void log();
     void saveColor();
     void readColor(std::string targetColor);
+    void clearCornerPoints();
 
     int hueMin, hueMax, satMin, satMax, valMin, valMax;
     int epsilon[3], mode;
+    int cornerCount;
+    cv::Point cornerPoints[NUM_OF_CORNERS];
     cv::Mat hsv_image, mask, *original;
     std::string logText, currentColor;
     std::ifstream infile;

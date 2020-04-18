@@ -40,6 +40,9 @@ Calibration::Calibration(std::string screenName, cv::Mat &image){
   cv::createTrackbar("Low  V", screenName, &valMin, 255);
   cv::createTrackbar("High V", screenName, &valMax, 255);
 
+  // Set all corner draws to (-1,-1)
+  clearCornerPoints();
+
   // Displays the original image with the sliders, once
   update();
 }
@@ -53,16 +56,12 @@ int Calibration::listenKey(){
       logText = "";
       break;
     case '2':
-      mode = INITIAL_POINT;
+      mode = SET_CORNERS;
+      clearCornerPoints();
       stopDrawing = true;
       logText = "";
       break;
     case '3':
-      mode = AREA_LIMITS;
-      stopDrawing = true;
-      logText = "";
-      break;
-    case '4':
       mode = DISTANCES;
       stopDrawing = true;
       logText = "";
@@ -124,11 +123,23 @@ void Calibration::log(){
     case HSV_COLORS:
       modeText = "Set HSV colors";
       break;
-    case INITIAL_POINT:
-      modeText = "Set initial point";
-      break;
-    case AREA_LIMITS:
-      modeText = "Grab area limits";
+    case SET_CORNERS:
+      switch(cornerCount){
+        case 0:
+          modeText = "Set corner UL [1]";
+          break;
+        case 1:
+          modeText = "Set corner UR [2]";
+          break;
+        case 2:
+          modeText = "Set corner DL [3]";
+          break;
+        case 3:
+          modeText = "Set corner DR [4]";
+          break;
+        default:
+          modeText = "Save corners [Press Enter]";
+      }
       break;
     case DISTANCES:
       modeText = "Get distances";
@@ -201,6 +212,13 @@ void Calibration::readColor(std::string targetColor){
   cv::setTrackbarPos("High V", screenName, valMax);
 }
 
+void Calibration::clearCornerPoints(){
+  cornerCount = 0;
+  
+  for(int i = 0; i < NUM_OF_CORNERS; i++)
+    cornerPoints[i] = cv::Point(-1,-1);
+}
+
 void Calibration::update(){
   // Sets result image as an empty image with original size and type
   result = cv::Mat::zeros((*original).size(), (*original).type());
@@ -216,6 +234,18 @@ void Calibration::update(){
   // Draw lines from mouseEvents
   if(!stopDrawing)
     cv::line(result, initialP, finalP, RED, 1);
+
+  // Draw corner points
+  cv::Point pointRefs[4];
+  for(int i = 0; i < NUM_OF_CORNERS; i++){
+    pointRefs[0] = cv::Point(cornerPoints[i].x - 5, cornerPoints[i].y);
+    pointRefs[1] = cv::Point(cornerPoints[i].x + 5, cornerPoints[i].y);
+    pointRefs[2] = cv::Point(cornerPoints[i].x, cornerPoints[i].y - 5);
+    pointRefs[3] = cv::Point(cornerPoints[i].x, cornerPoints[i].y + 5);
+
+    cv::line(result, pointRefs[0], pointRefs[1], RED, 1);
+    cv::line(result, pointRefs[2], pointRefs[3], RED, 1);
+  }
 
   // Adds feedback to the window
   log();
@@ -254,6 +284,13 @@ void Calibration::onMouse(int event, int x, int y){
       }
       break;
     
+    case SET_CORNERS:
+      if(event == CV_EVENT_LBUTTONDOWN && cornerCount < NUM_OF_CORNERS){
+        cornerPoints[cornerCount] = cv::Point(x, y);
+        cornerCount = (cornerCount + 1) % (NUM_OF_CORNERS + 1);
+      }
+      break;
+
     case DISTANCES:
       switch(event){
         case CV_EVENT_LBUTTONDOWN:
@@ -276,3 +313,24 @@ void Calibration::onMouse(int event, int x, int y){
   
   
 }
+
+
+
+  // cv::Point2f srcTri[3], dstTri[3];
+
+  // srcTri[0] = cv::Point2f(0.f, 0.f);
+  // srcTri[1] = cv::Point2f(image.cols - 1.f, 0.f);
+  // srcTri[2] = cv::Point2f(0.f, image.rows - 1.f);
+
+  // dstTri[0] = cv::Point2f( 0.f, image.rows*0.33f );
+  // dstTri[1] = cv::Point2f( image.cols*0.85f, image.rows*0.25f );
+  // dstTri[2] = cv::Point2f( image.cols*0.15f, image.rows*0.7f );
+
+  // cv::Mat warp_mat = getAffineTransform(srcTri, dstTri);
+  // cv::Mat warp_dst = cv::Mat::zeros(image.rows, image.cols, image.type());
+
+  // cv::warpAffine(image, warp_dst, warp_mat, warp_dst.size());
+
+  // cv::imshow("Warp", warp_dst);
+
+  // cv::waitKey();
