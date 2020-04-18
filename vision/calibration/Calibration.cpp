@@ -40,7 +40,7 @@ Calibration::Calibration(std::string screenName, cv::Mat &image){
   cv::createTrackbar("Low  V", screenName, &valMin, 255);
   cv::createTrackbar("High V", screenName, &valMax, 255);
 
-  // Set all corner draws to (-1,-1)
+  // Set all corner points to (-1,-1)
   clearCornerPoints();
 
   // Displays the original image with the sliders, once
@@ -310,8 +310,6 @@ void Calibration::onMouse(int event, int x, int y){
       }
       break;
   }
-  
-  
 }
 
 
