@@ -54,17 +54,19 @@ int Calibration::listenKey(){
       mode = HSV_COLORS;
       stopDrawing = true;
       logText = "";
+      clearCornerPoints();
       break;
     case '2':
       mode = SET_CORNERS;
-      clearCornerPoints();
       stopDrawing = true;
       logText = "";
+      clearCornerPoints();
       break;
     case '3':
       mode = DISTANCES;
       stopDrawing = true;
       logText = "";
+      clearCornerPoints();
       break;
     case 'o':
       scalarColor = ORANGE;
@@ -94,9 +96,12 @@ int Calibration::listenKey(){
       readColor("DEFAULT");
       break;
     case 10: // ENTER
-      if(scalarColor != WHITE){
+      if(mode == HSV_COLORS && scalarColor != WHITE){
         logText = "Color saved!";
         saveColor();
+      }
+      else if(mode == SET_CORNERS && cornerCount == NUM_OF_CORNERS){
+        logText = "Corners saved!";
       }
       break;
     case 32: // SPACE
@@ -110,19 +115,17 @@ int Calibration::listenKey(){
 void Calibration::log(){
   // Gets image height and width
   int x = (*original).cols, y = (*original).rows;
-  // Draws a small square with the current color, white if none
-  cv::rectangle(result, cv::Point(x-25,y-25), cv::Point(x-5,y-5), scalarColor, CV_FILLED);
   // Adds logText to the image, shows if the current color has been saved
-  if(mode == DISTANCES)
-    cv::putText(result, logText, cv::Point(x-130,y-5),cv::FONT_HERSHEY_PLAIN, 1.2, RED, 1);
-  else
-    cv::putText(result, logText, cv::Point(x-220,y-5),cv::FONT_HERSHEY_PLAIN, 1.8, scalarColor, 2);
 
   std::string modeText;
   switch(mode){
     case HSV_COLORS:
       modeText = "Set HSV colors";
+      // Draws a small square with the current color, white if none
+      cv::rectangle(result, cv::Point(x-25,y-25), cv::Point(x-5,y-5), scalarColor, CV_FILLED);
+      cv::putText(result, logText, cv::Point(x-225,y-5),cv::FONT_HERSHEY_PLAIN, 1.8, scalarColor, 2);
       break;
+
     case SET_CORNERS:
       switch(cornerCount){
         case 0:
@@ -140,10 +143,14 @@ void Calibration::log(){
         default:
           modeText = "Save corners [Press Enter]";
       }
+      cv::putText(result, logText, cv::Point(x-170,y-5),cv::FONT_HERSHEY_PLAIN, 1.3, GREEN, 2);
       break;
+
     case DISTANCES:
       modeText = "Get distances";
+      cv::putText(result, logText, cv::Point(x-120,y-5),cv::FONT_HERSHEY_PLAIN, 1.3, RED, 2);
       break;
+
     default:
       modeText = "";
   }
