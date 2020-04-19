@@ -30,18 +30,20 @@ class Calibration{
     void saveColor();
     void readColor(std::string targetColor);
     void saveCorners();
-    void clearCornerPoints();
+    void readCorners();
+    cv::Mat getPerspectiveMat();
 
     int hueMin, hueMax, satMin, satMax, valMin, valMax;
     int epsilon[3], mode;
     int cornerCount;
-    cv::Point cornerPoints[NUM_OF_CORNERS];
+    cv::Point2f cornerPoints[NUM_OF_CORNERS];
     cv::Mat hsv_image, mask, *original;
     std::string logText, currentColor;
     std::ifstream infile;
     cv::Scalar scalarColor;
     cv::Mat result;
     std::string screenName;
+    bool perspectiveON;
 
     // Mouse events
     static void onMouse(int event, int x, int y, int, void *userdata);

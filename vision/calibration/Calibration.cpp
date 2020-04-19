@@ -10,6 +10,7 @@ Calibration::Calibration(std::string screenName, cv::Mat &image){
   logText = "";
   mode = HSV_COLORS;
 
+  perspectiveON = false;
   isDrawing = false;
   stopDrawing = true;
 
@@ -40,8 +41,8 @@ Calibration::Calibration(std::string screenName, cv::Mat &image){
   cv::createTrackbar("Low  V", screenName, &valMin, 255);
   cv::createTrackbar("High V", screenName, &valMax, 255);
 
-  // Set all corner points to (-1,-1)
-  clearCornerPoints();
+  // Reads corners points from file
+  readCorners();
 
   // Displays the original image with the sliders, once
   update();
@@ -54,19 +55,19 @@ int Calibration::listenKey(){
       mode = HSV_COLORS;
       stopDrawing = true;
       logText = "";
-      clearCornerPoints();
+      readCorners();
       break;
     case '2':
       mode = SET_CORNERS;
       stopDrawing = true;
       logText = "";
-      clearCornerPoints();
+      readCorners();
       break;
     case '3':
       mode = DISTANCES;
       stopDrawing = true;
       logText = "";
-      clearCornerPoints();
+      readCorners();
       break;
     case 'o':
       scalarColor = ORANGE;
@@ -94,6 +95,9 @@ int Calibration::listenKey(){
       break;
     case 'c': // Keep currentColor but changes color to DEFAULT
       readColor("DEFAULT");
+      break;
+    case 'z':
+      perspectiveON = !perspectiveON;
       break;
     case 10: // ENTER
       if(mode == HSV_COLORS && scalarColor != WHITE)
@@ -231,46 +235,60 @@ void Calibration::saveCorners(){
   
   logText = "Corners saved!";
   cornerCount = 0;
-
-
-  cv::Point2f srcTri[3], dstTri[3];
-
-  srcTri[0] = cornerPoints[0];
-  srcTri[1] = cornerPoints[1];
-  srcTri[2] = cornerPoints[2];
-  srcTri[3] = cornerPoints[3];
-
-  dstTri[0] = cv::Point2f( 0.f, 0.f );
-  dstTri[1] = cv::Point2f( (*original).cols - 1.f, 0.f );
-  dstTri[2] = cv::Point2f( 0.f, (*original).rows - 1.f );
-  dstTri[3] = cv::Point2f( (*original).cols - 1.f, (*original).rows - 1.f );
-
-  cv::Mat warp_mat = getPerspectiveTransform(srcTri, dstTri);
-  cv::Mat warp_dst = cv::Mat::zeros((*original).size(), (*original).type());
-
-  cv::warpPerspective((*original), warp_dst, warp_mat, warp_dst.size());
-
-  cv::imshow("Warp", warp_dst);
 }
 
-void Calibration::clearCornerPoints(){
+void Calibration::readCorners(){
+  // Reads the file
+  std::ifstream file("corners.txt");
+
+  if(file.fail()){
+    std::cout << "File could not be opened\n";
+    return;  
+  }
+
+  int temp_x, temp_y;
+  for(int i = 0; i < NUM_OF_CORNERS; i++){
+    file >> temp_x >> temp_y;
+    cornerPoints[i] = cv::Point(temp_x, temp_y);
+  }
+
+  file.close();
   cornerCount = 0;
-  
-  for(int i = 0; i < NUM_OF_CORNERS; i++)
-    cornerPoints[i] = cv::Point(-1,-1);
+}
+
+cv::Mat Calibration::getPerspectiveMat(){
+  // Transforms result image to new perspective with corner points
+  if(perspectiveON){
+    cv::Mat dstMat = cv::Mat::zeros((*original).size(), (*original).type());
+    cv::Point2f dstPoints[4];
+
+    dstPoints[0] = cv::Point2f( 0.f, 0.f );
+    dstPoints[1] = cv::Point2f( (*original).cols - 1.f, 0.f );
+    dstPoints[2] = cv::Point2f( 0.f, (*original).rows - 1.f );
+    dstPoints[3] = cv::Point2f( (*original).cols - 1.f, (*original).rows - 1.f );
+
+    cv::Mat perspectiveMat = getPerspectiveTransform(cornerPoints, dstPoints);
+
+    cv::warpPerspective((*original), dstMat, perspectiveMat, result.size());
+    return dstMat;
+  }
+
+  return (*original).clone();;
 }
 
 void Calibration::update(){
+  // Get original copy or new transformed image
+  cv::Mat originalCopy = getPerspectiveMat();
   // Sets result image as an empty image with original size and type
   result = cv::Mat::zeros((*original).size(), (*original).type());
   // Updates the hsv_image
-  cv::cvtColor(*original, hsv_image, cv::COLOR_BGR2HSV);
+  cv::cvtColor(originalCopy, hsv_image, cv::COLOR_BGR2HSV);
   // Updates mask values with the corresponding H,S,V
   cv::inRange(hsv_image, cv::Scalar(hueMin, satMin, valMin), cv::Scalar(hueMax, satMax, valMax), mask);
   // Dilates the mask
   cv::dilate(mask, mask, cv::Mat(), cv::Point(-1, -1));
   // Combines the mask with the original image, as result we get only the filtered colors 
-  (*original).copyTo(result, mask);
+  originalCopy.copyTo(result, mask);
   
   // Draw lines from mouseEvents
   if(!stopDrawing)
@@ -278,7 +296,7 @@ void Calibration::update(){
 
   // Draw corner points
   cv::Point pointRefs[4];
-  for(int i = 0; i < NUM_OF_CORNERS; i++){
+  for(int i = 0; i < cornerCount && i < NUM_OF_CORNERS; i++){
     pointRefs[0] = cv::Point(cornerPoints[i].x - 5, cornerPoints[i].y);
     pointRefs[1] = cv::Point(cornerPoints[i].x + 5, cornerPoints[i].y);
     pointRefs[2] = cv::Point(cornerPoints[i].x, cornerPoints[i].y - 5);
