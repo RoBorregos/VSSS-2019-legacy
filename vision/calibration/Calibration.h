@@ -29,6 +29,7 @@ class Calibration{
     void log();
     void saveColor();
     void readColor(std::string targetColor);
+    void saveCorners();
     void clearCornerPoints();
 
     int hueMin, hueMax, satMin, satMax, valMin, valMax;

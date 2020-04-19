@@ -96,13 +96,10 @@ int Calibration::listenKey(){
       readColor("DEFAULT");
       break;
     case 10: // ENTER
-      if(mode == HSV_COLORS && scalarColor != WHITE){
-        logText = "Color saved!";
+      if(mode == HSV_COLORS && scalarColor != WHITE)
         saveColor();
-      }
-      else if(mode == SET_CORNERS && cornerCount == NUM_OF_CORNERS){
-        logText = "Corners saved!";
-      }
+      else if(mode == SET_CORNERS && cornerCount == NUM_OF_CORNERS)
+        saveCorners();
       break;
     case 32: // SPACE
       return 0;
@@ -188,6 +185,8 @@ void Calibration::saveColor(){
   outFile << wholeFile;
   outFile.close();
 
+  logText = "Color saved!";
+
   // Consoles out the rewritten values
   std::cout << currentColor << " " << temp << std::endl;
 }
@@ -217,6 +216,21 @@ void Calibration::readColor(std::string targetColor){
   cv::setTrackbarPos("High S", screenName, satMax);
   cv::setTrackbarPos("Low  V", screenName, valMin);
   cv::setTrackbarPos("High V", screenName, valMax);
+}
+
+void Calibration::saveCorners(){
+  // Rewrites entire output file
+  std::ofstream file("corners.txt");
+
+  file << cornerPoints[0].x << " " << cornerPoints[0].y << "\n";
+  file << cornerPoints[1].x << " " << cornerPoints[1].y << "\n";
+  file << cornerPoints[2].x << " " << cornerPoints[2].y << "\n";
+  file << cornerPoints[3].x << " " << cornerPoints[3].y << "\n";
+
+  file.close();
+  
+  logText = "Corners saved!";
+  cornerCount = 0;
 }
 
 void Calibration::clearCornerPoints(){
