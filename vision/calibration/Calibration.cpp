@@ -231,6 +231,26 @@ void Calibration::saveCorners(){
   
   logText = "Corners saved!";
   cornerCount = 0;
+
+
+  cv::Point2f srcTri[3], dstTri[3];
+
+  srcTri[0] = cornerPoints[0];
+  srcTri[1] = cornerPoints[1];
+  srcTri[2] = cornerPoints[2];
+  srcTri[3] = cornerPoints[3];
+
+  dstTri[0] = cv::Point2f( 0.f, 0.f );
+  dstTri[1] = cv::Point2f( (*original).cols - 1.f, 0.f );
+  dstTri[2] = cv::Point2f( 0.f, (*original).rows - 1.f );
+  dstTri[3] = cv::Point2f( (*original).cols - 1.f, (*original).rows - 1.f );
+
+  cv::Mat warp_mat = getPerspectiveTransform(srcTri, dstTri);
+  cv::Mat warp_dst = cv::Mat::zeros((*original).size(), (*original).type());
+
+  cv::warpPerspective((*original), warp_dst, warp_mat, warp_dst.size());
+
+  cv::imshow("Warp", warp_dst);
 }
 
 void Calibration::clearCornerPoints(){
@@ -332,24 +352,3 @@ void Calibration::onMouse(int event, int x, int y){
       break;
   }
 }
-
-
-
-  // cv::Point2f srcTri[3], dstTri[3];
-
-  // srcTri[0] = cv::Point2f(0.f, 0.f);
-  // srcTri[1] = cv::Point2f(image.cols - 1.f, 0.f);
-  // srcTri[2] = cv::Point2f(0.f, image.rows - 1.f);
-
-  // dstTri[0] = cv::Point2f( 0.f, image.rows*0.33f );
-  // dstTri[1] = cv::Point2f( image.cols*0.85f, image.rows*0.25f );
-  // dstTri[2] = cv::Point2f( image.cols*0.15f, image.rows*0.7f );
-
-  // cv::Mat warp_mat = getAffineTransform(srcTri, dstTri);
-  // cv::Mat warp_dst = cv::Mat::zeros(image.rows, image.cols, image.type());
-
-  // cv::warpAffine(image, warp_dst, warp_mat, warp_dst.size());
-
-  // cv::imshow("Warp", warp_dst);
-
-  // cv::waitKey();
