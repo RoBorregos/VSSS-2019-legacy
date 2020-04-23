@@ -28,8 +28,10 @@ int main(int argc, char** argv){
   std::cout << "2. Set corner coordinates" << std::endl;
   std::cout << "3. Get real distances\n" << std::endl;
 
-  std::cout << "Press 'SPACE' to freeze video" << std::endl;
-  std::cout << "Press 'Z' to switch perspective\n" << std::endl;
+  std::cout << "Press 'Z' to switch perspective" << std::endl;
+  std::cout << "Press 'C' to clear filter\n" << std::endl;
+  
+  std::cout << "Press 'SPACE' to freeze video\n" << std::endl;
 
   cv::Mat image;
   cv::VideoCapture cap;

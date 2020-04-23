@@ -19,6 +19,9 @@
 
 #define NUM_OF_CORNERS 4
 
+#define FIELD_ROWS 520
+#define FIELD_COLS 600
+
 class Calibration{
   public:
     Calibration(std::string screenName, cv::Mat &image);

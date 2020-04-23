@@ -115,9 +115,16 @@ int Calibration::listenKey(){
 
 void Calibration::log(){
   // Gets image height and width
-  int x = (*original).cols, y = (*original).rows;
+  int x,y;
+  if(perspectiveON){
+    x = FIELD_COLS;
+    y = FIELD_ROWS;
+  }
+  else{
+    x = (*original).cols;
+    y = (*original).rows;
+  }
   // Adds logText to the image, shows if the current color has been saved
-
   std::string modeText;
   switch(mode){
     case HSV_COLORS:
@@ -259,17 +266,18 @@ void Calibration::readCorners(){
 cv::Mat Calibration::getPerspectiveMat(){
   // Transforms result image to new perspective with corner points
   if(perspectiveON){
-    cv::Mat dstMat = cv::Mat::zeros((*original).size(), (*original).type());
+    cv::Mat dstMat = cv::Mat::zeros(FIELD_ROWS, FIELD_COLS, (*original).type());
     cv::Point2f dstPoints[4];
 
     dstPoints[0] = cv::Point2f( 0.f, 0.f );
-    dstPoints[1] = cv::Point2f( (*original).cols - 1.f, 0.f );
-    dstPoints[2] = cv::Point2f( 0.f, (*original).rows - 1.f );
-    dstPoints[3] = cv::Point2f( (*original).cols - 1.f, (*original).rows - 1.f );
+    dstPoints[1] = cv::Point2f( dstMat.cols - 1.f, 0.f );
+    dstPoints[2] = cv::Point2f( 0.f, dstMat.rows - 1.f );
+    dstPoints[3] = cv::Point2f( dstMat.cols - 1.f, dstMat.rows - 1.f );
 
     cv::Mat perspectiveMat = getPerspectiveTransform(cornerPoints, dstPoints);
 
-    cv::warpPerspective((*original), dstMat, perspectiveMat, result.size());
+    cv::warpPerspective((*original), dstMat, perspectiveMat, dstMat.size());
+
     return dstMat;
   }
 
@@ -280,7 +288,7 @@ void Calibration::update(){
   // Get original copy or new transformed image
   cv::Mat originalCopy = getPerspectiveMat();
   // Sets result image as an empty image with original size and type
-  result = cv::Mat::zeros((*original).size(), (*original).type());
+  result = cv::Mat::zeros(originalCopy.size(), originalCopy.type());
   // Updates the hsv_image
   cv::cvtColor(originalCopy, hsv_image, cv::COLOR_BGR2HSV);
   // Updates mask values with the corresponding H,S,V
@@ -322,10 +330,6 @@ void Calibration::onMouse(int event, int x, int y){
     case HSV_COLORS:
       if(event == CV_EVENT_LBUTTONDOWN){
         cv::Vec3b HSV_color = (hsv_image).at<cv::Vec3b>(cv::Point(x, y));
-
-        std::cout << "H = " << (int)HSV_color[0] << std::endl;
-        std::cout << "S = " << (int)HSV_color[1] << std::endl;
-        std::cout << "V = " << (int)HSV_color[2] << std::endl;
 
         hueMin = std::max(HSV_color[0] - epsilon[0], 0);
         satMin = std::max(HSV_color[1] - epsilon[1], 0);
