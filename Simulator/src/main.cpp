@@ -72,7 +72,7 @@ void moveTo(std::string team, int id, double x, double y, double angle, std::vec
 std::pair<double, double> calculate(std::string team, int id, double x, double y, double angle)
 {
 
-    double REF_X, REF_Y, CUR_X, CUR_Y, REF_ANGLE, CUR_ANGLE, REF_SPEED, REF_ASPEED;
+    double REF_X, REF_Y, CUR_X, CUR_Y, REF_ANGLE, CUR_ANGLE, REF_SPEED=3, REF_ASPEED=1;
     if(team=="yellow"){
     CUR_X = state.teamYellow[id].x;
     CUR_Y = state.teamYellow[id].y;
