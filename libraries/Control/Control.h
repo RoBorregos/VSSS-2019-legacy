@@ -10,21 +10,24 @@
 
 #ifndef CONTROL_H
 #define CONTROL_H
-/*
+
 #include "stdint.h"
 #include "Shape.h"
 #include "Point.h"
 #include <math.h>
 #include <vector>
 class Control{
+
     private:
-        std::vector<Shape> team;
-        void move(int id, double &right, double &left);
+
+        std::vector<Shape> allies;
+
         double wrapMinMax(double x, double min, double max); //keep angle wraped in range(pi, -pi)
         double wrapMax(double x, double max);
-        double getSpeed(double x, double y);
+        double getSpeed(double dx, double dy); //get tangent speed with dx and dy
         double map(double val,double fromL, double fromH, double toL, double toH);
-        static const double pi = 3.141592;
+
+        double pi = 3.141592;
         double s2 =100; //map values
         double s1 = 500;
         double ts=0.01; //constants
@@ -32,14 +35,14 @@ class Control{
         double r=0.016; //radius
         double l = 0.062; //length between wheels
         int min = 15; //minium vel (+,-)
+        double ki = 0.87;
+        double kd = 0.13;
 
     public:
-        Control(std::vector<Shape> teamX){
-            team = teamX;
+        Control(std::vector<Shape> &allies){
+            this->allies = allies;
         }
-        
-
-         
+        void move(int id, double &right, double &left);                 
 };
-*/
+
 #endif

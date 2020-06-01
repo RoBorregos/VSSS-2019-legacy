@@ -56,8 +56,7 @@ int main(int argc, char** argv){
   Vision vision = Vision(image, teamColor, allies, enemies, ball);
   vision.setDraw(true);
   // Control
-  Control control(allies);
-  vector<std::pair<double,double>> velocities;  //right, left
+  Control control = Control(allies);
 
   // Communication
   // if (!serialTransmitt.Configure("/dev/ttyUSB0")) {
@@ -88,7 +87,7 @@ int main(int argc, char** argv){
       // Pathplanning
 
       
-      // Control. To this point needs an updated robot current and final position.
+      // Control. To this point needs an updated robot current and final position of allies.
       double r=0,l=0;
 
       for(int i=0; i<3; i++){
