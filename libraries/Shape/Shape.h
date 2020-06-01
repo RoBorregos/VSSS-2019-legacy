@@ -10,8 +10,8 @@
 //  SHAPE
 //  Shape.h
 //  
-//  Last update: September 22, 2019
-//               Osvaldo Alvarez
+//  Last update: June 1, 2020
+//               zjuarez
 
 #ifndef SHAPE_H
 #define SHAPE_H
@@ -28,9 +28,13 @@ class Shape{
             dy = 0;
             dx = 0;
             ori = 0;
+            finalOri = -1; 
+            lastTime = 0;
+            error=0;
+            lastDistance = 0;
         }
         
-        float dx, dy, ori;
+        float dx, dy, ori, finalOri,error, lastDistance;
         Point currentPos, finalPos;
         std::chrono::time_point<std::chrono::system_clock> lastTime;
         uint8_t id, role;
