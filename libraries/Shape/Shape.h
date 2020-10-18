@@ -17,23 +17,42 @@
 #define SHAPE_H
 
 #include "stdint.h"
-#include <chrono>
 #include "Point.h"
 
 class Shape{
+    private:
+        int id;
+        double vx;
+        double vy;
+        Point coords;
+        Point idealCoords;
+ 
     public:
         Shape(){
-            currentPos = Point(0,0);
-            finalPos = Point(0,0);
-            dy = 0;
-            dx = 0;
-            ori = 0;
+
         }
-        
-        float dx, dy, ori;
-        Point currentPos, finalPos;
-        std::chrono::time_point<std::chrono::system_clock> lastTime;
-        uint8_t id, role;
+
+        void changeId(int id ){
+            this->id = id;
+        }
+
+        void changeCurrentCoords(Point coords){
+            this->coords.changeCoords(coords);
+        }
+
+        void changeIdealCoords(Point idealCoords){
+            this->idealCoords.changeCoords(idealCoords);
+        }
+
+        void changeVel(double vx, double vy){
+            this->vx = vx;
+            this->vy = vy;            
+        }
+
+        void print(){
+            std::cout<<"ID: "<<this->id<<"\n"<<"Current Coords: "<<this->coords.print()<<"Ideal Coords: "<<this->idealCoords.print()<<"State: "<<"\n";
+        }
+
 };
 
 #endif

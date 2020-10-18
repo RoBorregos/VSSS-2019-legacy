@@ -4,23 +4,27 @@
 #include <math.h>
 #include <iostream>
 
-class Point{        
+class Point{   
+         
+    private: 
+        int x;
+        int y;
+
     public:
         Point(){};
 
-        Point(float x, float y){
-            this->x = x;
-            this->y = y;
+        void changeCoords(Point p){
+            this->x = p.x;
+            this->y = p.y;
         }
 
-        float distance(Point ref){
-            return sqrt(pow(x-ref.x, 2) + pow(y-ref.y, 2));
+        double getdistance(Point p){
+            return sqrt((p.x-this->x)*(p.x-this->x) + (p.y-this->y)*(p.y-this->y));
         }
-        void printData(){
-             std::cout << "(" << x << "," << y << ")" << std::endl;
+        
+        void print(){
+            std::cout << "(" << x << "," << y << ")" << "\n";
         }
-        float x, y;
-
 };
 
 
