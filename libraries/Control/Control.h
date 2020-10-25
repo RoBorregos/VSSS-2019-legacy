@@ -12,8 +12,8 @@
 #define CONTROL_H
 
 #include "stdint.h"
-#include "Shape.h"
-#include "Point.h"
+#include "../Shape/Shape.h"
+#include "../Shape/Point.h"
 #include <math.h>
 #include <vector>
 class Control{
@@ -24,7 +24,7 @@ class Control{
 
         double wrapMinMax(double x, double min, double max); //keep angle wraped in range(pi, -pi)
         double wrapMax(double x, double max);
-        double getSpeed(double dx, double dy); //get tangent speed with dx and dy
+        double getSpeed(double dx, double dy); //get |tangent speed with dx and dy
         double map(double val,double fromL, double fromH, double toL, double toH);
 
         double pi = 3.141592;

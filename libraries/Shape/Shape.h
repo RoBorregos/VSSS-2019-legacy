@@ -29,7 +29,6 @@ class Shape{
             dx = 0;
             ori = 0;
             finalOri = -1; 
-            lastTime = 0;
             error=0;
             lastDistance = 0;
         }
