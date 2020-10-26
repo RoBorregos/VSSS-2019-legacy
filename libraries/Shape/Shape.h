@@ -31,9 +31,10 @@ class Shape{
             finalOri = -1; 
             error=0;
             lastDistance = 0;
+            speedAngle = 0;
         }
         
-        float dx, dy, ori, finalOri,error, lastDistance;
+        float dx, dy, ori, finalOri,error, lastDistance, speedAngle;
         Point currentPos, finalPos;
         std::chrono::time_point<std::chrono::system_clock> lastTime;
         uint8_t id, role;

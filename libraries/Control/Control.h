@@ -20,8 +20,6 @@ class Control{
 
     private:
 
-        std::vector<Shape> allies;
-
         double wrapMinMax(double x, double min, double max); //keep angle wraped in range(pi, -pi)
         double wrapMax(double x, double max);
         double getSpeed(double dx, double dy); //get |tangent speed with dx and dy
@@ -42,7 +40,10 @@ class Control{
         Control(std::vector<Shape> &allies){
             this->allies = allies;
         }
-        void move(int id, double &right, double &left);                 
+        void move(int id, double &right, double &left);
+        float generateGenericFinalAngle(int id);
+        std::vector<Shape> allies;
+                 
 };
 
 #endif

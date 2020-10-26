@@ -16,6 +16,25 @@ double Control::map(double val,double fromL, double fromH, double toL, double to
     return (val-fromL)*(toH-toL)/(fromH-fromL)+toL;
 }
 
+float Control::generateGenericFinalAngle(int id){
+
+    float REF_ANGLE;
+    float difX = allies[id].finalPos.x - allies[id].currentPos.x;
+    float difY = allies[id].finalPos.y * -1 - allies[id].currentPos.y;
+
+    if (difX == 0 && difY == 0)
+            REF_ANGLE = 0;
+        else if (difX == 0)
+            REF_ANGLE = pi / 2.0;
+        else
+            REF_ANGLE = atan(difY / difX);
+        if (allies[id].currentPos.x > allies[id].finalPos.x)
+            REF_ANGLE += pi;
+    
+    REF_ANGLE = wrapMinMax(REF_ANGLE, -pi, pi);
+    return REF_ANGLE;
+}
+
 void Control::move(int id, double &rightV, double &leftV)
 {
     double REF_X, REF_Y, CUR_X, CUR_Y, REF_ANGLE, CUR_ANGLE, REF_SPEED, REF_ASPEED;
@@ -75,7 +94,7 @@ void Control::move(int id, double &rightV, double &leftV)
     double multiply = 1;
 
         //angular speed should be greater if its close to a wall or the objective to unstuck (not the goalie)
-    if ((d <= 0.22 || REF_X <= 12 || REF_X >= 157 || REF_Y <= -110 || REF_Y >= -15) && id != 0)
+    if ((d <= 0.22 || REF_X <= 12 || REF_X >= 157 || REF_Y <= -110 || REF_Y >= -15) )
         multiply = 2;
 
         //calculations of linear and angular speed
@@ -88,7 +107,7 @@ void Control::move(int id, double &rightV, double &leftV)
 
         //some Integrative-Derivative considerations on right and left
         //alternative is to do this before. for the w and v
-
+/*
     auto now = std::chrono::system_clock::now();
     double time = std::chrono::duration_cast<std::chrono::milliseconds>(now - allies[id].lastTime).count();
     double prop = 1;
@@ -109,6 +128,7 @@ void Control::move(int id, double &rightV, double &leftV)
         right *= prop;
         left *= prop;
     }
+    */
 
     right = map(right, -s1, s1, -s2, s2);
     left = map(left, -s1, s1, -s2, s2);
