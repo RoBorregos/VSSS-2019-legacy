@@ -11,16 +11,20 @@
 class SimulatorBridge{
 
     public:
+
     std::vector<Shape> allies;
-    Control myControl =  Control(allies);
+    Control myControl;
+    
     void updateShapes(std::vector<vss::Robot> robots);
     void setFinalPos(int id, float x, float y);
     void setFinalAngle(int id, float finalAngle);
-
+    void updateControl(){
+        myControl = Control(allies);
+    }
     SimulatorBridge(){
         std::vector<Shape> allies(3);
-        myControl= Control(allies);
+        this->allies = allies;
+        myControl = Control(this->allies);
     }
-
 };
 #endif

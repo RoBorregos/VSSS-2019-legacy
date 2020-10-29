@@ -20,58 +20,45 @@ float Control::generateGenericFinalAngle(int id){
 
     float REF_ANGLE;
     float difX = allies[id].finalPos.x - allies[id].currentPos.x;
-    float difY = allies[id].finalPos.y * -1 - allies[id].currentPos.y;
+    float difY = allies[id].currentPos.y - allies[id].finalPos.y;
 
     if (difX == 0 && difY == 0)
             REF_ANGLE = 0;
         else if (difX == 0)
             REF_ANGLE = pi / 2.0;
-        else
+        else{
             REF_ANGLE = atan(difY / difX);
         if (allies[id].currentPos.x > allies[id].finalPos.x)
             REF_ANGLE += pi;
+        }
     
     REF_ANGLE = wrapMinMax(REF_ANGLE, -pi, pi);
     return REF_ANGLE;
 }
 
-void Control::move(int id, double &rightV, double &leftV)
+void Control::move(Shape &robot, double &rightV, double &leftV)
 {
     double REF_X, REF_Y, CUR_X, CUR_Y, REF_ANGLE, CUR_ANGLE, REF_SPEED, REF_ASPEED;
 
-    CUR_X = allies[id].currentPos.x;
-    CUR_Y = allies[id].currentPos.y;
-    CUR_ANGLE = ((int)(360 - allies[id].ori) % 360) * pi / 180.0;
- 
+    CUR_X = robot.currentPos.x;
+    CUR_Y = robot.currentPos.y*-1;
+    CUR_ANGLE = ((int)(360 - robot.ori) % 360) * pi / 180.0;
     CUR_ANGLE = wrapMinMax(CUR_ANGLE, -pi, pi);
 
-    REF_X = allies[id].finalPos.x;
-    REF_Y = allies[id].finalPos.y * -1;
-    REF_ANGLE = allies[id].finalOri; 
+    REF_X = robot.finalPos.x;
+    REF_Y = robot.finalPos.y * -1;
+    REF_ANGLE = robot.finalOri; 
+
+    //debug
+    std::cout<<"CONTROL CUR X AND REF X: "<< CUR_X << " "<< REF_X<<std::endl;
+    std::cout<<"CONTROL CUR Y AND REF Y: "<< CUR_Y << " "<< REF_Y<<std::endl;
+    std::cout<<"CONTROL CUR A AND REF A: "<< CUR_ANGLE << " "<< REF_ANGLE<<std::endl;
 
     double difX = REF_X - CUR_X;
     double difY = REF_Y - CUR_Y;
 
-    // -1 is a generic final angle (use this to reach  the final position in a straight line)
-    if (REF_ANGLE !=-1)
-        REF_ANGLE = ((int)(360 - REF_ANGLE) % 360) * pi / 180.0;
-    else
-    {
-        if (difX == 0 && difY == 0)
-            REF_ANGLE = 0;
-        else if (difX == 0)
-            REF_ANGLE = pi / 2.0;
-        else
-            REF_ANGLE = atan(difY / difX);
-        if (CUR_X > REF_X)
-            REF_ANGLE += pi;
-    }
-
-    REF_ANGLE = wrapMinMax(REF_ANGLE, -pi, pi);
-
-    REF_SPEED = 3; //NEEDS TESTING (GENERIC)
-    REF_ASPEED = 1; //NEEDS TESTING (GENERIC)
-
+    REF_SPEED = 1.5; //NEEDS TESTING (GENERIC)
+    REF_ASPEED = 2; //NEEDS TESTING (GENERIC)
 
     REF_X += ts * REF_SPEED * cos(REF_ANGLE);
     REF_Y += ts * REF_SPEED * sin(REF_ANGLE);
@@ -82,24 +69,13 @@ void Control::move(int id, double &rightV, double &leftV)
     difX = REF_X - CUR_X;
     difY = REF_Y - CUR_Y;
 
-    double e1 = 0.0113 * difX * (cos(REF_ANGLE) + sin(REF_ANGLE));
-    double e2 = 0.0113 * difY * (cos(REF_ANGLE) - sin(REF_ANGLE));
+    double e1 = kSimulator * difX * (cos(REF_ANGLE) + sin(REF_ANGLE));
+    double e2 = kSimulator * difY * (cos(REF_ANGLE) - sin(REF_ANGLE));
     double e3 = wrapMinMax(REF_ANGLE - CUR_ANGLE, -pi, pi);
-
-    Point curPoint = Point(CUR_X,CUR_Y);
-    Point refPoint = Point(REF_X,REF_Y);
-
-    double d = curPoint.distance(refPoint);
-
-    double multiply = 1;
-
-        //angular speed should be greater if its close to a wall or the objective to unstuck (not the goalie)
-    if ((d <= 0.22 || REF_X <= 12 || REF_X >= 157 || REF_Y <= -110 || REF_Y >= -15) )
-        multiply = 2;
 
         //calculations of linear and angular speed
     double v = REF_SPEED * cos(e3) + k[0] * e1;
-    double w = REF_ASPEED + multiply * k[1] * REF_SPEED * e2 * + multiply * k[2] * REF_SPEED * sin(e3);
+    double w = REF_ASPEED + ( k[1] * REF_SPEED * e2 * +   k[2] * REF_SPEED * sin(e3));
 
         //calculations of right and left velocities
     double right = (v * 2.0 + w * l) / (2.0 * r);
@@ -129,7 +105,7 @@ void Control::move(int id, double &rightV, double &leftV)
         left *= prop;
     }
     */
-
+/*
     right = map(right, -s1, s1, -s2, s2);
     left = map(left, -s1, s1, -s2, s2);
 
@@ -138,8 +114,23 @@ void Control::move(int id, double &rightV, double &leftV)
 
     if (left > -min && left < min)
         left = left < 0 ? -min : min;
-
+*/
+std::cout<<right<<" "<<left<<std::endl;
 rightV = right;
 leftV = left;
+}
+
+std::vector<std::pair<double,double>> Control::moveAll(){
+
+    std::vector<std::pair<double,double>> result;
+    double r,l;
+    
+    for(int i=0; i<3; i++){
+    r=0,l=0;
+    move(allies[i],r,l);
+    result.push_back(std::make_pair(r,l));
+    }
+
+    return result;
 }
 

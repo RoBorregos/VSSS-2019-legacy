@@ -45,6 +45,7 @@ void send_commands(std::vector<std::pair<double, double>> velY, std::vector<std:
 
 int main(int argc, char **argv)
 {
+  std::cout<<"Main STARTED"<<std::endl;
   srand(time(NULL));
   stateReceiver = new StateReceiver();
   commandSenderY = new CommandSender();
@@ -60,20 +61,18 @@ int main(int argc, char **argv)
   commandSenderB->createSocket(TeamType::Blue);
   debugSenderB->createSocket(TeamType::Blue);
 
-  SimulatorBridge simulador;
+  SimulatorBridge simulador = SimulatorBridge();
 
-  while (true)
-  {
-    vss::Debug debug;
-    vss::Command command;
     //necesario para "comunicacion"
-    velocitiesYellow = {std::make_pair(0, 0), std::make_pair(0, 0), std::make_pair(0, 0)};
     velocitiesBlue = {std::make_pair(0, 0), std::make_pair(0, 0), std::make_pair(0, 0)};
     
+  while (true)
+  {
+    std::cout<<"LOOPING"<<std::endl;
+
     // vision (ish)
     state = stateReceiver->receiveState(FieldTransformationType::None);
     simulador.updateShapes(state.teamYellow);
-
 
     // TODO estrategia
     // estrategia rapida de prueba (ir al balon)
@@ -82,24 +81,13 @@ int main(int argc, char **argv)
     simulador.setFinalAngle(i,simulador.myControl.generateGenericFinalAngle(i));
     }
 
-    //debug poses deseados de los robots aliados
-    for(int i=0; i<3; i++)
-    debug.finalPoses.push_back(Pose(simulador.allies[i].currentPos.x, simulador.allies[i].currentPos.y, simulador.allies[i].finalOri));
-    
     //TODO path planning
 
-    //control 
-    for(int i=0; i<3; i++){
-    double r = 0, l = 0;
-    std::cout<<"Control "<<i<<std::endl;
-    simulador.myControl.move(i,r,l);
-    std::cout<<r<<" "<<l<<std::endl;
-    velocitiesYellow[i] = std::make_pair(r,l);
-    }
+    
+    simulador.updateControl();
     //comunicacion
-    send_commands(velocitiesYellow, velocitiesBlue);
+    send_commands(simulador.myControl.moveAll(), velocitiesBlue);
 
-    debugSenderY->sendDebug(debug);
   }
-  return 0;
+  return 0; 
 }
